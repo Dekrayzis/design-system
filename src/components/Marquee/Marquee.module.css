@@ -1,0 +1,107 @@
+/*
+ * The track holds the list twice and slides exactly one copy's width, so the loop is seamless.
+ * Tunable per instance: --marquee-duration, --marquee-gap, --marquee-fade.
+ */
+.root {
+  --marquee-duration: 40s;
+  --marquee-gap: var(--ds-space-8);
+  --marquee-fade: 12%;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+  min-width: 0;
+}
+
+.viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  /* Items appear out of nothing at one edge and dissolve at the other, rather than being clipped. */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--marquee-fade),
+    #000 calc(100% - var(--marquee-fade)),
+    transparent 100%
+  );
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide var(--marquee-duration) linear infinite;
+}
+
+.group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--marquee-gap);
+  margin: 0;
+  padding: 0 var(--marquee-gap) 0 0;
+  list-style: none;
+}
+
+/* Let people read an item they're interested in, and honour the pause button. */
+.root:hover .track,
+.root:focus-within .track,
+.root[data-paused] .track {
+  animation-play-state: paused;
+}
+
+.root[data-reverse] .track {
+  animation-direction: reverse;
+}
+
+.toggle {
+  flex-shrink: 0;
+}
+
+/*
+ * Less motion (system setting or the site's pause switch): a static strip that still scrolls
+ * sideways (swipe, trackpad, shift+wheel, or arrow keys once focused), with one copy of the list.
+ * data-static mirrors the same two triggers from script, so the region role and tabindex match.
+ */
+.root[data-static] .viewport {
+  overflow-x: auto;
+  mask-image: none;
+  scrollbar-width: none;
+}
+
+.root[data-static] .viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.root[data-static] .viewport:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+  border-radius: var(--ds-radius-sm);
+}
+
+.root[data-static] .track {
+  animation: none;
+}
+
+.root[data-static] .group:last-child,
+.root[data-static] .repeat {
+  display: none;
+}
+
+/* The same, before hydration and for CSS-only consumers. */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}
+
+:root[data-motion='paused'] .track {
+  animation: none;
+}
+
+@keyframes marquee-slide {
+  to {
+    transform: translateX(-50%);
+  }
+}

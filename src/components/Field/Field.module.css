@@ -1,0 +1,152 @@
+.field {
+  display: grid;
+  gap: var(--ds-space-1);
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-color-text);
+}
+
+.required {
+  color: var(--ds-color-danger-text);
+}
+
+.hiddenLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hint,
+.error {
+  margin: 0;
+  font-size: var(--ds-font-size-sm);
+}
+
+.hint {
+  color: var(--ds-color-text-muted);
+}
+
+.error {
+  color: var(--ds-color-danger-text);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+/* Shared look for text-like controls (input, textarea, select). */
+.control {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: var(--ds-space-2) var(--ds-space-3);
+  border: var(--ds-border-width) solid var(--ds-color-border-strong);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-surface);
+  color: var(--ds-color-text);
+  font-size: var(--ds-font-size-md);
+  line-height: var(--ds-line-height-normal);
+  transition:
+    border-color var(--ds-duration-fast) var(--ds-easing-standard),
+    box-shadow var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.control::placeholder {
+  color: var(--ds-color-text-subtle);
+}
+
+.control:hover:not(:disabled) {
+  border-color: var(--ds-color-text-muted);
+}
+
+.control:focus-visible {
+  /* Invisible normally; forced-colours mode paints it, since it drops the box-shadow ring. */
+  outline: var(--ds-focus-ring-width) solid transparent;
+  border-color: var(--ds-color-focus);
+  box-shadow: 0 0 0 var(--ds-focus-ring-width) var(--ds-color-focus);
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--ds-color-danger);
+}
+
+.control[aria-invalid='true']:focus-visible {
+  box-shadow: 0 0 0 var(--ds-focus-ring-width) var(--ds-color-danger);
+}
+
+.control:disabled {
+  cursor: not-allowed;
+  background: var(--ds-color-bg-muted);
+  color: var(--ds-color-text-subtle);
+}
+
+/* ---- Optional icons inside text-like controls ---- */
+.iconWrap {
+  position: relative;
+  display: flex;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  color: var(--ds-color-text-subtle);
+  translate: 0 -50%;
+  pointer-events: none;
+  transition: color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.icon > svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.iconStart {
+  inset-inline-start: var(--ds-space-3);
+}
+
+.iconEnd {
+  inset-inline-end: var(--ds-space-3);
+}
+
+/* Multi-line controls: pin icons to the first line instead of centring them. */
+.iconTop {
+  top: calc(var(--ds-space-2) + 0.1875rem + var(--ds-border-width));
+  translate: none;
+}
+
+.hasStartIcon {
+  padding-inline-start: calc(var(--ds-space-3) + 1.125rem + var(--ds-space-2));
+}
+
+.hasEndIcon {
+  padding-inline-end: calc(var(--ds-space-3) + 1.125rem + var(--ds-space-2));
+}
+
+.iconWrap:focus-within .icon {
+  color: var(--ds-color-text-muted);
+}
+
+.iconWrap:has([aria-invalid='true']) .icon {
+  color: var(--ds-color-danger-text);
+}
+
+.iconWrap:has(:disabled) .icon {
+  opacity: 0.6;
+}
+
+/* Empty live regions stay in the accessibility tree (so later errors are announced) but take no space. */
+.liveError:empty {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}

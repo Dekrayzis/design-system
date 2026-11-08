@@ -1,0 +1,154 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-forms.webp';
+
+<Meta title="Guides/Forms and validation" />
+
+<DocBanner title="Forms and validation" eyebrow="Guides" src={banner} />
+
+Every form control (`TextField`, `TextArea`, `Select`, `Checkbox`, `CheckboxGroup`, `RadioGroup`,
+`Switch`) validates through the browser's **Constraint Validation API**. You describe the rules;
+the controls check them, show inline errors, and block submission. There is no form library and no
+schema to wire up, though you can still use one.
+
+See it working in the [sign-up form example](?path=/story/examples-sign-up-form--shows-validation-errors).
+
+## Anatomy of a field
+
+Each control renders, in order: a visible **label**, an optional **hint**, the **control**, and an
+**error** slot. The hint and error are linked with `aria-describedby`; an error also sets
+`aria-invalid`. Groups (`CheckboxGroup`, `RadioGroup`) use a `<fieldset>` whose `<legend>` is the
+label.
+
+```tsx
+<TextField
+  label="Password"
+  hint="At least 8 characters, including a number."
+  type="password"
+  autoComplete="new-password"
+  required
+  minLength={8}
+/>
+```
+
+## Describing rules
+
+### Native attributes
+
+`required`, `minLength`, `maxLength`, `min`, `max`, `step`, `pattern` and input `type` all work as
+in plain HTML.
+
+```tsx
+<TextField label="Email" type="email" required />
+<TextField label="Username" minLength={3} pattern="[a-z0-9_]+" />
+<CheckboxGroup legend="Days" required>…</CheckboxGroup>   {/* at least one */}
+```
+
+### Custom rules
+
+`validate` receives the current value and returns a message (invalid) or nothing (valid). Rules
+are re-applied every render, so a rule that depends on another field stays current:
+
+```tsx
+<TextField
+  label="Confirm password"
+  type="password"
+  validate={(value) => (value === password ? null : 'Passwords don’t match.')}
+/>
+```
+
+### Your own wording
+
+Browser messages are generic and vary by browser and language. Replace them per constraint with
+`validationMessages`:
+
+```tsx
+<TextField
+  label="Username"
+  required
+  pattern="[a-z0-9_]+"
+  validationMessages={{
+    valueMissing: 'Enter a username.',
+    patternMismatch: 'Use lowercase letters, numbers and underscores only.',
+  }}
+/>
+```
+
+Keys are the `ValidityState` names: `valueMissing`, `typeMismatch`, `patternMismatch`, `tooShort`,
+`tooLong`, `rangeUnderflow`, `rangeOverflow`, `stepMismatch`, `badInput`.
+
+### Server errors
+
+An explicit `error` prop always wins over built-in validation. Use it for problems only the server
+knows about:
+
+```tsx
+<TextField label="Email" type="email" error={serverErrors.email} />
+```
+
+## When errors appear
+
+| Moment                 | What happens                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| Typing, first time     | Nothing. People aren't told off before they've finished.                     |
+| Leaving the field      | The field is checked and its error shown (`validateOn="blur"`, the default). |
+| Typing, after an error | Re-checked on every change, so the error clears as soon as it's fixed.       |
+| Submitting             | Every invalid field shows its error and focus moves to the first one. The submit event doesn't fire. |
+| Resetting the form     | All errors clear.                                                            |
+
+Change the first trigger with `validateOn="change"` (check while typing, good for a password
+strength rule) or `validateOn="submit"` (stay quiet until submit, good for very short forms).
+
+## Error summary
+
+For forms with more than a few fields, add an `ErrorSummary` at the top. After a blocked submit it
+lists every error, takes focus so screen reader users hear what went wrong, and links each item to
+its field. `useErrorSummary` collects the errors the fields already report, so you don't duplicate
+any rules:
+
+```tsx
+import { useRef } from 'react';
+import { ErrorSummary, useErrorSummary } from '@dekrayzis/design-system';
+
+function SignUp() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const summary = useErrorSummary(formRef);
+
+  return (
+    <form ref={formRef} onSubmit={save}>
+      <ErrorSummary {...summary} />
+      {/* fields */}
+    </form>
+  );
+}
+```
+
+## Submitting
+
+Because invalid controls block the native `submit` event, your `onSubmit` handler only runs when
+everything is valid. Inside it, read values from the form (`new FormData(event.currentTarget)`) or
+from controlled state, whichever you prefer: every control works either way, with `value` and
+`onChange`, or `defaultValue` and a `name`.
+
+```tsx
+async function save(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  await api.createAccount(Object.fromEntries(data));
+}
+```
+
+Show progress on the submit button with `loading`, which sets `aria-busy` and blocks double
+submits, and confirm success with an `Alert` or a `toast`.
+
+## Writing good form copy
+
+- **Labels** name the thing in a word or two: "Email", "Team size". No colons, no "Please enter".
+- **Hints** say what's expected before it's wrong: formats, limits, why you're asking.
+- **Errors** say what to do, not what went wrong: "Enter your email address", not "Invalid input".
+  Use the field's name so the message makes sense in the summary too.
+- Mark the optional fields, not the required ones, if most fields are required.
+- Don't disable the submit button to signal invalid input. Let people submit, then show what to
+  fix: a disabled button explains nothing.
+
+More in [Writing guidelines](?path=/docs/guides-writing-guidelines--docs).

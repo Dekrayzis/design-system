@@ -1,0 +1,304 @@
+/* Shared by Checkbox, CheckboxGroup, Radio and RadioGroup. */
+
+/*
+ * Sizes. Everything an option draws reads these variables: the box, the radio dot, the label and
+ * hint text and the gap between box and label. The option's font-size is the label size, so `em`
+ * below is relative to the label and the box stays centred on its first line at every size.
+ */
+.option {
+  --box-size: 1.125rem;
+  --dot-size: 0.5rem;
+  --label-size: var(--ds-font-size-md);
+  --hint-size: var(--ds-font-size-sm);
+  --option-gap: var(--ds-space-2);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--option-gap);
+  font-size: var(--label-size);
+  line-height: var(--ds-line-height-normal);
+}
+
+.sm {
+  --box-size: 1rem;
+  --dot-size: 0.4375rem;
+  --label-size: var(--ds-font-size-sm);
+  --hint-size: var(--ds-font-size-xs);
+  --option-gap: var(--ds-space-2);
+}
+
+.md {
+  /* uses the defaults above */
+}
+
+.lg {
+  --box-size: 1.375rem;
+  --dot-size: 0.625rem;
+  --label-size: var(--ds-font-size-lg);
+  --hint-size: var(--ds-font-size-md);
+  --option-gap: var(--ds-space-3);
+}
+
+/* ---- Checkbox: native input restyled, SVG indicator layered on top ---- */
+.control {
+  position: relative;
+  display: inline-grid;
+  flex-shrink: 0;
+  width: var(--box-size);
+  height: var(--box-size);
+  margin-top: calc((1.5em - var(--box-size)) / 2);
+  /* Own stacking context: nothing outside (e.g. a z-index on inputs) can reorder box and mark. */
+  isolation: isolate;
+  transition: scale var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+/* Dim the box and its mark together. Opacity on the input alone would paint it over the mark. */
+.control:has(.checkbox:disabled) {
+  opacity: 0.5;
+}
+
+/* Press feedback: the whole box (input + mark) dips while the pointer is down. */
+.control:has(.checkbox:active:not(:disabled)) {
+  scale: 0.88;
+}
+
+.checkbox,
+.radio {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-content: center;
+  width: var(--box-size, 1.125rem);
+  height: var(--box-size, 1.125rem);
+  margin: 0;
+  border: var(--ds-border-width) solid var(--ds-color-border-strong);
+  background: var(--ds-color-surface);
+  cursor: pointer;
+  transition:
+    background-color var(--ds-duration-fast) var(--ds-easing-standard),
+    border-color var(--ds-duration-fast) var(--ds-easing-standard),
+    box-shadow var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.checkbox {
+  grid-area: 1 / 1;
+  border-radius: var(--ds-radius-sm);
+}
+
+/* Hover halo, as on most modern checkboxes; stays off for disabled boxes. */
+.checkbox:hover:not(:disabled) {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ds-color-accent) 14%, transparent);
+}
+
+.checkbox:hover:not(:disabled, :checked, :indeterminate) {
+  border-color: var(--ds-color-text-muted);
+}
+
+.checkbox:checked,
+.checkbox:indeterminate {
+  border-color: var(--ds-color-accent);
+  background: var(--ds-color-accent);
+}
+
+.indicator {
+  position: relative;
+  z-index: 1;
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  padding: 1px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ds-color-on-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/*
+ * Each mark is "drawn" by animating its dash offset. pathLength="1" normalises the path, so a
+ * dasharray of 1 covers it exactly: offset 1 = hidden, 0 = fully drawn. Unchecking reverses it.
+ */
+.check,
+.dash {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+/* The dash grows out from its centre rather than from the left. */
+.dash {
+  transform-box: fill-box;
+  transform-origin: center;
+  scale: 0 1;
+  stroke-dashoffset: 0;
+  transition: scale var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+/* Draw the tick just after the box has filled, so it reads as one motion. */
+.checkbox:checked:not(:indeterminate) + .indicator .check {
+  stroke-dashoffset: 0;
+  transition-duration: var(--ds-duration-normal);
+  transition-delay: calc(var(--ds-duration-fast) / 2);
+}
+
+.checkbox:indeterminate + .indicator .dash {
+  scale: 1 1;
+  transition-duration: var(--ds-duration-normal);
+}
+
+.checkbox[aria-invalid='true']:not(:checked, :indeterminate) {
+  border-color: var(--ds-color-danger);
+}
+
+/* ---- Radio ---- */
+.radio {
+  margin-top: calc((1.5em - var(--box-size)) / 2);
+  border-radius: var(--ds-radius-full);
+}
+
+.radio:hover:not(:disabled) {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ds-color-accent) 14%, transparent);
+}
+
+.radio:hover:not(:disabled, :checked) {
+  border-color: var(--ds-color-text-muted);
+}
+
+.radio::before {
+  content: '';
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-color-on-accent);
+  transform: scale(0);
+  transition: transform var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.radio:checked {
+  border-color: var(--ds-color-accent);
+  background: var(--ds-color-accent);
+}
+
+.radio:checked::before {
+  transform: scale(1);
+}
+
+/* ---- Shared states ---- */
+.checkbox:focus-visible,
+.radio:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.checkbox:disabled,
+.radio:disabled {
+  cursor: not-allowed;
+}
+
+.radio:disabled {
+  opacity: 0.5;
+}
+
+.option:has(:disabled) .label {
+  cursor: not-allowed;
+  color: var(--ds-color-text-subtle);
+}
+
+.text {
+  display: grid;
+  gap: 2px;
+}
+
+.label {
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.hint,
+.error {
+  margin: 0;
+  font-size: var(--hint-size, var(--ds-font-size-sm));
+}
+
+.hint {
+  color: var(--ds-color-text-muted);
+}
+
+.error {
+  color: var(--ds-color-danger-text);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+/* ---- CheckboxGroup ---- */
+.fieldset {
+  display: grid;
+  gap: var(--ds-space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.required {
+  color: var(--ds-color-danger-text);
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--ds-space-1);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.options {
+  display: flex;
+  gap: var(--ds-space-3);
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.horizontal {
+  flex-flow: row wrap;
+  gap: var(--ds-space-6);
+}
+
+/* Windows High Contrast / forced colours: system colours replace ours, so restate state with them. */
+@media (forced-colors: active) {
+  .checkbox,
+  .radio {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+  }
+
+  .checkbox:checked,
+  .checkbox:indeterminate,
+  .radio:checked {
+    border-color: Highlight;
+    background: Highlight;
+  }
+
+  .indicator {
+    forced-color-adjust: none;
+    stroke: HighlightText;
+  }
+
+  .radio::before {
+    background: HighlightText;
+  }
+
+  .checkbox:disabled,
+  .radio:disabled {
+    border-color: GrayText;
+  }
+
+  .checkbox:disabled:is(:checked, :indeterminate),
+  .radio:disabled:checked {
+    background: GrayText;
+  }
+}

@@ -1,0 +1,70 @@
+.avatar {
+  /* Only forced-colours mode paints this; it keeps the shape visible when backgrounds are dropped. */
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-color-accent-subtle);
+  color: var(--ds-color-accent-text);
+  font-weight: var(--ds-font-weight-semibold);
+  object-fit: cover;
+  user-select: none;
+}
+
+.sm {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.625rem;
+}
+
+.md {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: var(--ds-font-size-xs);
+}
+
+.lg {
+  width: 3rem;
+  height: 3rem;
+  font-size: var(--ds-font-size-md);
+}
+
+.xl {
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: var(--ds-font-size-xl);
+}
+
+/* Initials colours. Subtle backgrounds with matching text keep contrast in both themes. */
+.color-accent {
+  background: var(--ds-color-accent-subtle);
+  color: var(--ds-color-accent-text);
+}
+
+.color-blue {
+  background: var(--ds-color-info-subtle);
+  color: var(--ds-color-info-text);
+}
+
+.color-green {
+  background: var(--ds-color-success-subtle);
+  color: var(--ds-color-success-text);
+}
+
+.color-amber {
+  background: var(--ds-color-warning-subtle);
+  color: var(--ds-color-warning-text);
+}
+
+.color-red {
+  background: var(--ds-color-danger-subtle);
+  color: var(--ds-color-danger-text);
+}
+
+.color-neutral {
+  background: var(--ds-color-bg-muted);
+  color: var(--ds-color-text-muted);
+}

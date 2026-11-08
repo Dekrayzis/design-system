@@ -1,0 +1,79 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-accessibility.webp';
+
+<Meta title="Foundations/Accessibility" />
+
+<DocBanner title="Accessibility" eyebrow="Foundations" src={banner} />
+
+The target is **WCAG 2.2 AA**. Components are built so the accessible path is the default one:
+you'd have to work to make them inaccessible. This page lists what the library guarantees, how it
+is checked, and what is still your job.
+
+## Built in
+
+### Semantics
+- Native elements first: `<button>`, `<a href>`, `<dialog>`, `<fieldset>`/`<legend>`, `<input>`,
+  `<select>`. ARIA is only added where HTML can't express the pattern (the custom `Select`, `Tabs`,
+  `ButtonGroup`).
+- Actions and navigation are different elements: `Button` renders `<button type="button">`,
+  `LinkButton` renders `<a href>`. They look alike, and they announce and behave differently, on purpose.
+- `Heading` sets level and size separately, so the visual design never forces a broken outline.
+
+### Labels and names
+- Every form control requires a visible `label`. Groups require a `legend`.
+- `IconButton` requires a `label`; it becomes the accessible name and the tooltip.
+- Hints and errors are tied to their control with `aria-describedby`, and errors set `aria-invalid`.
+
+### Keyboard
+- Everything is reachable with <kbd>Tab</kbd> and operable with <kbd>Enter</kbd>/<kbd>Space</kbd>.
+- Composite widgets follow the WAI-ARIA Authoring Practices: arrow keys move inside `Tabs`,
+  `RadioGroup`, `ButtonGroup` and `Select`; <kbd>Home</kbd>/<kbd>End</kbd> jump; type-ahead works in
+  `Select`.
+- `Dialog` traps focus, closes on <kbd>Escape</kbd> and returns focus to what opened it.
+- Focus is always visible on keyboard focus. A [story](?path=/story/foundations-focus-indicators--every-control-shows-focus)
+  tabs through every control and fails if any lacks an indicator.
+
+### Announcements
+- Field errors live in regions that exist before they're filled, so they're announced when they
+  appear.
+- `ErrorSummary` takes focus after a blocked submit and links to each invalid field.
+- Loading buttons set `aria-busy`; toasts announce politely (success, info) or assertively
+  (warning, error) and never steal focus.
+- "Required" is exposed even where `aria-required` isn't allowed (checkbox groups, searchable selects).
+
+### Visual
+- Text contrast 4.5:1, control borders and focus rings 3:1, in both themes, enforced by a unit test.
+  See [Colour](?path=/docs/foundations-colour--docs).
+- **Forced colours** (Windows High Contrast): state is restated with system colours, and every
+  focus ring has a real `outline`, because forced colours drop `box-shadow`.
+- Sizes are in `rem`, so text scales with the user's browser font size.
+- Colour is never the only signal.
+
+### Time and motion
+- Toast timers pause on hover, keyboard focus and hidden tabs (WCAG 2.2.1). Errors and toasts with
+  an action stay until dismissed.
+- Reduced motion and the site pause switch stop all motion. See [Motion](?path=/docs/foundations-motion--docs).
+
+## How it's checked
+
+| Layer                    | What runs                                                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| Unit tests (jsdom)       | Every component suite queries by role and accessible name, drives it with `user-event`, and ends with a jest-axe check. |
+| Story tests (Chromium)   | Every story renders in a real browser, runs its `play` interaction, then axe, including colour contrast. Each runs three times: light, dark and forced colours. |
+| Token tests              | Contrast ratios for every text, border and focus token, in both themes.                       |
+| Storybook panels         | The **Accessibility** panel flags violations live as you browse; the **Interactions** panel replays each story's test. |
+
+## Still your job
+
+Automated checks catch perhaps a third of real problems. When you use the components:
+
+- **Write meaningful labels.** "Email" not "Field 1"; "Delete project" not "Delete".
+- **Keep the outline intact.** One `h1` per page, no skipped heading levels, real landmarks
+  (`main`, `nav`, `header`, `footer`).
+- **Write alt text** for `LazyImage`, or `alt=""` if it's decorative.
+- **Don't override focus styles**, and don't use positive `tabIndex`.
+- **Test with a screen reader.** NVDA or JAWS on Windows, VoiceOver on macOS and iOS, TalkBack on
+  Android. The library itself still needs a manual pass in real screen readers, especially the
+  `Select` patterns.
+- **Test with the keyboard only**, at 200% and 400% zoom, and with Windows High Contrast on.

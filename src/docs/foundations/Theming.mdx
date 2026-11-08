@@ -1,0 +1,109 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { Badge } from '../../components/Badge/Badge';
+import { Button } from '../../components/Button/Button';
+import { Stack } from '../../components/Stack/Stack';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-theming.webp';
+
+<Meta title="Foundations/Theming" />
+
+<DocBanner title="Theming" eyebrow="Foundations" src={banner} />
+
+The library ships a light and a dark theme, both defined entirely in CSS custom properties. No
+provider, no context and no JavaScript are needed to switch them.
+
+## Choosing a theme
+
+| You want                         | Do this                                          |
+| -------------------------------- | ------------------------------------------------ |
+| Follow the OS (default)          | Nothing. `prefers-color-scheme` picks for you.   |
+| Force light everywhere           | `<html data-theme="light">`                      |
+| Force dark everywhere            | `<html data-theme="dark">`                       |
+| One dark area on a light page    | `<section data-theme="dark">…</section>`        |
+
+`data-theme` works on **any ancestor**, so a dark hero band or a light preview pane inside a dark
+app is just an attribute. Each theme also sets `color-scheme`, so native scrollbars, date pickers
+and autofill follow along.
+
+<div data-theme="dark" style={{ background: 'var(--ds-color-bg)', color: 'var(--ds-color-text)', padding: 24, borderRadius: 12, marginBlock: 16 }}>
+  <Stack direction="row" gap={3} align="center" wrap>
+    <span>This box has <code>data-theme="dark"</code>:</span>
+    <Button>Primary</Button>
+    <Button variant="secondary">Secondary</Button>
+    <Badge tone="success">Live</Badge>
+  </Stack>
+</div>
+
+Remember to paint the container: set `background: var(--ds-color-bg)` and
+`color: var(--ds-color-text)` on a themed region, as `base.css` does for `<body>`.
+
+### A user-facing switch
+
+Store the choice and set the attribute; remove it for "System":
+
+```tsx
+function applyTheme(choice: 'light' | 'dark' | 'system') {
+  const root = document.documentElement;
+  if (choice === 'system') root.removeAttribute('data-theme');
+  else root.setAttribute('data-theme', choice);
+  localStorage.setItem('theme', choice);
+}
+```
+
+To avoid a flash of the wrong theme, read the stored value in a tiny inline `<head>` script before
+your bundle, just like [`motionPauseScript`](?path=/docs/foundations-motion--docs) does for motion.
+
+## Rebranding
+
+Override the **semantic** tokens after importing the stylesheet. Each role has several tokens
+that move together, so change the set:
+
+```css
+@import '@dekrayzis/design-system/styles.css';
+
+:root {
+  --ds-color-accent: #0f766e;
+  --ds-color-accent-hover: #115e59;
+  --ds-color-accent-subtle: #f0fdfa;
+  --ds-color-accent-text: #115e59;
+  --ds-color-on-accent: #ffffff;
+  --ds-color-focus: #0d9488;
+  --ds-font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+[data-theme='dark'] {
+  --ds-color-accent: #2dd4bf;
+  --ds-color-accent-hover: #5eead4;
+  --ds-color-accent-subtle: #134e4a;
+  --ds-color-accent-text: #5eead4;
+  --ds-color-on-accent: #042f2e;
+  --ds-color-focus: #5eead4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    /* repeat the dark values here */
+  }
+}
+```
+
+Dark values live in **two** places: `[data-theme='dark']` (forced) and the
+`prefers-color-scheme: dark` block (automatic). Override both, or OS-dark users will see the old
+accent.
+
+### Rebranding checklist
+
+1. Change whole roles, not single tokens (`accent`, `accent-hover`, `accent-subtle`,
+   `accent-text`, `on-accent`).
+2. Set light **and** dark values.
+3. Re-check contrast: 4.5:1 for text roles and `on-accent`, 3:1 for `focus` and `border-strong`.
+   Copying your values into `tokens.css` and running `npm test` does this for you.
+4. Look at every component in both themes with the **Theme** toolbar and in forced-colours mode.
+
+## What not to override
+
+- Primitives (`--ds-palette-*`): components never read them, so changing them only affects other
+  semantic tokens that point at them. Remap the semantic token instead.
+- Durations: set them via the motion switch, not by hand, or reduced motion stops working.
+- Component class names: CSS Modules hash them, and they change between versions. If you need a
+  variant the components don't offer, compose or wrap rather than reaching inside.

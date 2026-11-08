@@ -1,0 +1,258 @@
+/*
+ * Position decides where the stack sits and which way toasts enter and leave: they slide in from
+ * and out towards the nearest screen edge.
+ */
+.toaster {
+  --edge: var(--ds-space-5);
+  --enter-x: 0;
+  --enter-y: 12px;
+  --exit-x: calc(100% + var(--edge));
+  --exit-y: 0;
+
+  position: fixed;
+  z-index: var(--ds-z-tooltip);
+  display: flex;
+  flex-direction: column;
+  width: min(24rem, calc(100vw - 2 * var(--edge)));
+  /* The empty stack never blocks clicks on the page beneath it. */
+  pointer-events: none;
+}
+
+.toaster[data-position^='bottom'] {
+  bottom: var(--edge);
+}
+
+.toaster[data-position^='top'] {
+  --enter-y: -12px;
+
+  top: var(--edge);
+}
+
+.toaster[data-position$='right'] {
+  right: var(--edge);
+}
+
+.toaster[data-position$='left'] {
+  --exit-x: calc(-100% - var(--edge));
+
+  left: var(--edge);
+}
+
+.toaster[data-position$='center'] {
+  left: 50%;
+  translate: -50% 0;
+  --exit-x: 0;
+}
+
+.toaster[data-position='bottom-center'] {
+  --exit-y: calc(100% + var(--edge));
+}
+
+.toaster[data-position='top-center'] {
+  --exit-y: calc(-100% - var(--edge));
+}
+
+@media (max-width: 40rem) {
+  .toaster {
+    --edge: var(--ds-space-3);
+
+    right: var(--edge);
+    left: var(--edge);
+    width: auto;
+    translate: none;
+  }
+}
+
+.region {
+  display: contents;
+}
+
+/*
+ * Each toast sits in a grid row that collapses (1fr → 0fr) while it leaves, so the toasts after it
+ * glide into place instead of jumping. Spacing lives inside the row so it collapses too.
+ */
+.item {
+  display: grid;
+  grid-template-rows: 1fr;
+  padding-block: calc(var(--ds-space-2) / 2);
+  pointer-events: auto;
+  transition:
+    grid-template-rows 240ms var(--ds-easing-standard) 80ms,
+    padding-block 240ms var(--ds-easing-standard) 80ms;
+}
+
+.item[data-leaving] {
+  grid-template-rows: 0fr;
+  padding-block: 0;
+  pointer-events: none;
+}
+
+.toast {
+  --tone: var(--ds-color-success-text);
+  --tone-bg: var(--ds-color-success-subtle);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: var(--ds-space-3);
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--ds-space-3) var(--ds-space-2) var(--ds-space-3) var(--ds-space-4);
+  border: var(--ds-border-width) solid var(--ds-color-border);
+  border-radius: var(--ds-radius-lg);
+  background: color-mix(in srgb, var(--ds-color-surface-raised) 92%, transparent);
+  color: var(--ds-color-text);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 6%, transparent) inset,
+    var(--ds-shadow-lg);
+  backdrop-filter: blur(10px) saturate(1.2);
+  font-size: var(--ds-font-size-sm);
+  animation: toast-in 420ms var(--ds-easing-emphasized) both;
+}
+
+/* The tone's edge, down the leading side. */
+.toast::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--tone);
+}
+
+.toast[data-tone='info'] {
+  --tone: var(--ds-color-info-text);
+  --tone-bg: var(--ds-color-info-subtle);
+}
+
+.toast[data-tone='warning'] {
+  --tone: var(--ds-color-warning-text);
+  --tone-bg: var(--ds-color-warning-subtle);
+}
+
+.toast[data-tone='error'] {
+  --tone: var(--ds-color-danger-text);
+  --tone-bg: var(--ds-color-danger-subtle);
+}
+
+/* Leaving: off towards the nearest edge, then the row collapses behind it. */
+.item[data-leaving] .toast {
+  animation: toast-out 320ms var(--ds-easing-standard) forwards;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--ds-radius-full);
+  background: var(--tone-bg);
+  color: var(--tone);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--tone) 10%, transparent);
+}
+
+.text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 0.2rem;
+}
+
+.message {
+  font-weight: var(--ds-font-weight-semibold);
+  line-height: var(--ds-line-height-tight);
+}
+
+.description {
+  color: var(--ds-color-text-muted);
+  line-height: var(--ds-line-height-normal);
+}
+
+.action {
+  justify-self: start;
+  margin-top: var(--ds-space-2);
+}
+
+.close {
+  margin-top: -2px;
+  color: var(--ds-color-text-subtle);
+}
+
+/* Countdown for timed toasts. Freezes with the timers (hover, focus, hidden tab). */
+.timer {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--tone);
+  opacity: 0.55;
+  transform-origin: left;
+  animation: toast-timer var(--toast-duration, 5000ms) linear forwards;
+}
+
+.toaster[data-held] .timer {
+  animation-play-state: paused;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: var(--enter-x) var(--enter-y);
+    scale: 0.96;
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    translate: var(--exit-x) var(--exit-y);
+  }
+}
+
+@keyframes toast-timer {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* Less motion (system setting or MotionToggle): no slides; the store removes toasts instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .item[data-leaving] .toast {
+    animation: none;
+  }
+
+  .item {
+    transition: none;
+  }
+
+  .timer {
+    display: none;
+  }
+}
+
+:root[data-motion='paused'] .toast,
+:root[data-motion='paused'] .item[data-leaving] .toast {
+  animation: none;
+}
+
+:root[data-motion='paused'] .item {
+  transition: none;
+}
+
+:root[data-motion='paused'] .timer {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .toast::before,
+  .timer {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  .icon {
+    box-shadow: none;
+  }
+}

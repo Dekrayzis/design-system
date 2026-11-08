@@ -1,0 +1,119 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/addon-docs/blocks';
+import { DocBanner } from './DocBanner';
+import banner from './assets/banner-tokens.webp';
+
+<Meta title="Foundations/Tokens" />
+
+<DocBanner title="Tokens" eyebrow="Foundations" src={banner} />
+
+All values live in `src/styles/tokens.css` and ship as `@dekrayzis/design-system/tokens.css`.
+Swatches below use the live CSS variables, so switch the **Theme** toolbar to see the dark values.
+
+## Semantic colours
+
+Components use only these.
+
+<ColorPalette>
+  <ColorItem
+    title="Background"
+    subtitle="--ds-color-bg / bg-subtle / bg-muted"
+    colors={{ bg: 'var(--ds-color-bg)', subtle: 'var(--ds-color-bg-subtle)', muted: 'var(--ds-color-bg-muted)' }}
+  />
+  <ColorItem
+    title="Surface"
+    subtitle="--ds-color-surface / surface-raised"
+    colors={{ surface: 'var(--ds-color-surface)', raised: 'var(--ds-color-surface-raised)' }}
+  />
+  <ColorItem
+    title="Text"
+    subtitle="--ds-color-text / text-muted / text-subtle"
+    colors={{ text: 'var(--ds-color-text)', muted: 'var(--ds-color-text-muted)', subtle: 'var(--ds-color-text-subtle)' }}
+  />
+  <ColorItem
+    title="Border"
+    subtitle="--ds-color-border / border-strong"
+    colors={{ border: 'var(--ds-color-border)', strong: 'var(--ds-color-border-strong)' }}
+  />
+  <ColorItem
+    title="Accent"
+    subtitle="--ds-color-accent / hover / subtle / text"
+    colors={{
+      accent: 'var(--ds-color-accent)',
+      hover: 'var(--ds-color-accent-hover)',
+      subtle: 'var(--ds-color-accent-subtle)',
+      text: 'var(--ds-color-accent-text)',
+    }}
+  />
+  <ColorItem
+    title="Danger"
+    subtitle="--ds-color-danger / hover / subtle / text"
+    colors={{
+      danger: 'var(--ds-color-danger)',
+      hover: 'var(--ds-color-danger-hover)',
+      subtle: 'var(--ds-color-danger-subtle)',
+      text: 'var(--ds-color-danger-text)',
+    }}
+  />
+  <ColorItem
+    title="Status"
+    subtitle="--ds-color-{success,warning,info}-{subtle,text}"
+    colors={{
+      'success-subtle': 'var(--ds-color-success-subtle)',
+      'success-text': 'var(--ds-color-success-text)',
+      'warning-subtle': 'var(--ds-color-warning-subtle)',
+      'warning-text': 'var(--ds-color-warning-text)',
+      'info-subtle': 'var(--ds-color-info-subtle)',
+      'info-text': 'var(--ds-color-info-text)',
+    }}
+  />
+</ColorPalette>
+
+## Typography
+
+<Typeset
+  fontFamily="var(--ds-font-sans)"
+  fontSizes={['0.75rem', '0.875rem', '1rem', '1.125rem', '1.375rem', '1.75rem', '2.25rem']}
+  fontWeight={500}
+  sampleText="The quick brown fox jumps over the lazy dog"
+/>
+
+| Token                     | Value      |
+| ------------------------- | ---------- |
+| `--ds-font-size-xs`       | 0.75rem    |
+| `--ds-font-size-sm`       | 0.875rem   |
+| `--ds-font-size-md`       | 1rem       |
+| `--ds-font-size-lg`       | 1.125rem   |
+| `--ds-font-size-xl`       | 1.375rem   |
+| `--ds-font-size-2xl`      | 1.75rem    |
+| `--ds-font-size-3xl`      | 2.25rem    |
+
+## Spacing
+
+A 4px grid. Use `--ds-space-{n}` or the `gap` prop on `Stack`.
+
+<div style={{ display: 'grid', gap: 8 }}>
+  {[1, 2, 3, 4, 5, 6, 8, 10, 12].map((n) => (
+    <div key={n} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <code style={{ width: 120 }}>--ds-space-{n}</code>
+      <div style={{ width: `var(--ds-space-${n})`, height: 16, background: 'var(--ds-color-accent)', borderRadius: 2 }} />
+      <span style={{ color: 'var(--ds-color-text-muted)', fontSize: 14 }}>{n * 4}px</span>
+    </div>
+  ))}
+</div>
+
+## Radius and elevation
+
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
+  {['sm', 'md', 'lg', 'full'].map((r) => (
+    <div key={r} style={{ textAlign: 'center' }}>
+      <div style={{ width: 72, height: 72, borderRadius: `var(--ds-radius-${r})`, background: 'var(--ds-color-accent-subtle)', border: '1px solid var(--ds-color-accent)' }} />
+      <code>radius-{r}</code>
+    </div>
+  ))}
+  {['sm', 'md', 'lg'].map((s) => (
+    <div key={s} style={{ textAlign: 'center' }}>
+      <div style={{ width: 72, height: 72, borderRadius: 12, background: 'var(--ds-color-surface-raised)', boxShadow: `var(--ds-shadow-${s})` }} />
+      <code>shadow-{s}</code>
+    </div>
+  ))}
+</div>

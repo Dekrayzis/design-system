@@ -1,0 +1,121 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-getting-started.webp';
+
+<Meta title="Guides/Getting started" />
+
+<DocBanner title="Getting started" eyebrow="Guides" src={banner} />
+
+## 1. Install
+
+```bash
+npm install @dekrayzis/design-system
+```
+
+`react` and `react-dom` 18.2 or later (including 19) are peer dependencies. The package is ESM only
+and ships its own TypeScript types.
+
+## 2. Import the styles once
+
+Import the stylesheet at your app's root, before your own CSS so your overrides win:
+
+```tsx
+// main.tsx, app/layout.tsx or _app.tsx
+import '@dekrayzis/design-system/styles.css';
+```
+
+`styles.css` contains the tokens, a minimal base layer (box-sizing, body colours and font) and every
+component's styles. If you only want the variables, for example to style a non-React part of a
+site, import `@dekrayzis/design-system/tokens.css` instead.
+
+## 3. Load the font (optional)
+
+Text uses Inter when it's available and the platform UI font otherwise. The package doesn't bundle
+font files. To use Inter, load it however your app loads fonts, for example with `next/font` or a
+self-hosted `@font-face`. To use a different family, override `--ds-font-sans`
+(see [Theming](?path=/docs/foundations-theming--docs)).
+
+## 4. Use components
+
+```tsx
+import { Button, Stack, TextField } from '@dekrayzis/design-system';
+
+export function NewsletterForm() {
+  return (
+    <form action="/subscribe" method="post">
+      <Stack gap={4}>
+        <TextField name="email" label="Email" type="email" autoComplete="email" required />
+        <Button type="submit">Subscribe</Button>
+      </Stack>
+    </form>
+  );
+}
+```
+
+Everything is a named export from the package root.
+
+## 5. One-off setup for app-wide pieces
+
+### Toasts
+
+Mount `Toaster` once, near the root; call `toast()` from anywhere.
+
+```tsx
+import { Toaster, toast } from '@dekrayzis/design-system';
+
+<Toaster />;
+
+toast('Changes saved', { tone: 'success' });
+```
+
+### Motion and theme before first paint
+
+If you offer a [motion pause switch](?path=/docs/foundations-motion--docs) or a theme switch, apply
+the saved choice with a small inline script in `<head>`, so the first paint is already right.
+
+- **Server-rendered apps:** render `motionPauseScript` in `<head>`:
+
+  ```tsx
+  import { motionPauseScript } from '@dekrayzis/design-system';
+
+  <script dangerouslySetInnerHTML={{ __html: motionPauseScript }} />
+  ```
+
+- **Next.js App Router:** do the same in the root layout and add `suppressHydrationWarning` to
+  `<html>`, since the script changes its attributes before React hydrates.
+- **Client-only apps (Vite):** React won't run a `<script>` it renders, so paste the script into
+  `index.html` instead.
+- **With a Content Security Policy:** give the tag a per-request `nonce`, or allow the script's hash.
+
+The [Motion](?path=/docs/foundations-motion--docs) page ("Avoiding a flash of motion") has the full
+code for each case.
+
+## Server rendering
+
+Components render on the server. Those that read browser state (motion preference, focus, menu
+position) render a safe default first, such as full motion and closed menus, and correct
+themselves after hydration.
+
+The package doesn't add `'use client'` directives. In the Next.js App Router, import interactive
+components (anything with state or event handlers, such as `Select`, `Tabs`, `Dialog`, `toast`) from
+a file marked `'use client'`, or re-export them from one:
+
+```tsx
+// components/ds.ts
+'use client';
+// Next.js doesn't allow `export *` in a client boundary, so name each one.
+export { Button, Dialog, Select, Tabs, TabList, Tab, TabPanel, TextField, Toaster } from '@dekrayzis/design-system';
+```
+
+## Browser support
+
+The library relies on modern platform features: `<dialog>`, the Popover API (for `Select` menus and
+`Tooltip`), CSS `:has()` and `color-scheme`. It targets current versions of Chrome, Edge, Firefox
+and Safari.
+
+## Where next
+
+- [Colour](?path=/docs/foundations-colour--docs), [Typography](?path=/docs/foundations-typography--docs)
+  and [Spacing](?path=/docs/foundations-spacing-and-layout--docs): the foundations components are built on.
+- [Forms and validation](?path=/docs/guides-forms-and-validation--docs): how every form control validates.
+- [Accessibility](?path=/docs/foundations-accessibility--docs): what's built in and what's still your job.

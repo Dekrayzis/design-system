@@ -1,0 +1,93 @@
+.pagination {
+  display: flex;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-1);
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0 var(--ds-space-2);
+  border: var(--ds-border-width) solid transparent;
+  border-radius: var(--ds-radius-md);
+  background: transparent;
+  color: var(--ds-color-text);
+  font: inherit;
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--ds-duration-fast) var(--ds-easing-standard),
+    border-color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.step {
+  padding: 0 var(--ds-space-3);
+}
+
+.control:hover:not(.current, .disabled) {
+  border-color: var(--ds-color-border-strong);
+  background: var(--ds-color-bg-muted);
+}
+
+.control:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.current {
+  background: var(--ds-color-accent);
+  color: var(--ds-color-on-accent);
+  font-weight: var(--ds-font-weight-semibold);
+  cursor: default;
+}
+
+/* Previous on page 1 and Next on the last page: still readable, clearly inactive. */
+.disabled {
+  color: var(--ds-color-text-subtle);
+  cursor: not-allowed;
+}
+
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  color: var(--ds-color-text-muted);
+}
+
+.summary {
+  margin: 0;
+  color: var(--ds-color-text-muted);
+  font-size: var(--ds-font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Forced colours drop the accent fill, so mark the current page with the system highlight. */
+@media (forced-colors: active) {
+  .current {
+    forced-color-adjust: none;
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .disabled {
+    color: GrayText;
+  }
+}

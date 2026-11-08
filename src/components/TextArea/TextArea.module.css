@@ -1,0 +1,80 @@
+.textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+/* ---- Optional character count (showCount), after Portfolio2k26's brief meter ---- */
+.count {
+  --meter: var(--ds-color-accent);
+  --number: var(--ds-color-text-subtle);
+
+  display: grid;
+  gap: var(--ds-space-1);
+}
+
+/* Below minLength: a quiet bar, "keep going". */
+.count[data-state='short'] {
+  --meter: var(--ds-color-text-subtle);
+}
+
+.count[data-state='good'] {
+  --number: var(--ds-color-accent-text);
+}
+
+.count[data-state='near'] {
+  --meter: var(--ds-color-warning-text);
+  --number: var(--ds-color-warning-text);
+}
+
+.count[data-state='full'] {
+  --meter: var(--ds-color-danger-text);
+  --number: var(--ds-color-danger-text);
+}
+
+.meter {
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-color-border);
+}
+
+.fill {
+  display: block;
+  width: var(--fill, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--meter);
+  transition:
+    width var(--ds-duration-fast) linear,
+    background-color var(--ds-duration-normal) var(--ds-easing-standard);
+}
+
+.foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ds-space-3);
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-text-muted);
+}
+
+.number {
+  margin-inline-start: auto;
+  color: var(--number);
+  font-weight: var(--ds-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--ds-duration-normal) var(--ds-easing-standard);
+}
+
+@media (forced-colors: active) {
+  .meter {
+    forced-color-adjust: none;
+    background: Canvas;
+    outline: 1px solid CanvasText;
+  }
+
+  .fill {
+    background: Highlight;
+  }
+}

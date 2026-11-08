@@ -1,0 +1,79 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from './DocBanner';
+import banner from './assets/banner-introduction.webp';
+
+<Meta title="Introduction" />
+
+<DocBanner title="Design System" eyebrow="@dekrayzis/design-system" src={banner} />
+
+A themeable, accessible React component library. Components are built on native HTML elements
+first (`<button>`, `<dialog>`, `<fieldset>`, `<select>`), styled with CSS Modules and driven entirely
+by CSS custom-property tokens, so there is no runtime styling cost and no CSS-in-JS dependency.
+
+## Install and use
+
+```bash
+npm install @dekrayzis/design-system
+```
+
+```tsx
+import '@dekrayzis/design-system/styles.css';
+import { Button, TextField } from '@dekrayzis/design-system';
+
+export function Example() {
+  return (
+    <form>
+      <TextField label="Email" type="email" autoComplete="email" />
+      <Button type="submit">Subscribe</Button>
+    </form>
+  );
+}
+```
+
+## Theming
+
+The theme follows the operating system by default. Force one by setting `data-theme="light"` or
+`data-theme="dark"` on `<html>` or any container. Use the **Theme** toolbar button above to try it.
+
+To rebrand, override the semantic tokens after importing the stylesheet:
+
+```css
+:root {
+  --ds-color-accent: #0f766e;
+  --ds-color-accent-hover: #115e59;
+  --ds-color-accent-subtle: #f0fdfa;
+  --ds-color-accent-text: #115e59;
+  --ds-font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+}
+```
+
+## Principles
+
+1. **Semantics first.** Pick the element for what the thing *is*: buttons act, links navigate, forms
+   submit. `Button` and `LinkButton` look alike but render different elements for that reason.
+2. **Accessible by default.** Every form control requires a visible `label`; icon-only buttons require
+   a `label` prop; errors are wired with `aria-describedby` and `aria-invalid`. Each story is checked by
+   the **Accessibility** panel, and each component has axe checks in its test suite.
+3. **Tokens, not values.** Components only read semantic tokens (`--ds-color-*`, `--ds-space-*`), never
+   raw palette values, so themes only touch one layer.
+4. **Respect the user.** Focus rings are always visible on keyboard focus, and motion collapses under
+   `prefers-reduced-motion`.
+
+## Testing
+
+Each component has a React Testing Library suite in `*.test.tsx` that tests behaviour the way a user
+experiences it (by role and accessible name), plus an axe check. A smoke test also renders every
+story through `composeStories`, so stories can't silently break.
+
+```bash
+npm test
+```
+
+## Where next
+
+| Guides | Foundations |
+| ------ | ----------- |
+| [Getting started](?path=/docs/guides-getting-started--docs): install, setup, server rendering | [Tokens](?path=/docs/foundations-tokens--docs): every token at a glance |
+| [Forms and validation](?path=/docs/guides-forms-and-validation--docs): rules, errors, error summary | [Colour](?path=/docs/foundations-colour--docs), [Typography](?path=/docs/foundations-typography--docs), [Spacing and layout](?path=/docs/foundations-spacing-and-layout--docs) |
+| [Writing guidelines](?path=/docs/guides-writing-guidelines--docs): labels, buttons, errors | [Shape and elevation](?path=/docs/foundations-shape-and-elevation--docs), [Motion](?path=/docs/foundations-motion--docs), [Theming](?path=/docs/foundations-theming--docs) |
+| [Contributing](?path=/docs/guides-contributing--docs): adding a component | [Accessibility](?path=/docs/foundations-accessibility--docs): what's built in and what's left to you |

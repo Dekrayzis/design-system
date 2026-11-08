@@ -1,0 +1,177 @@
+.fieldset {
+  display: grid;
+  gap: var(--ds-space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--ds-space-1);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.required,
+.error {
+  color: var(--ds-color-danger-text);
+}
+
+.hint,
+.error {
+  margin: 0;
+  font-size: var(--ds-font-size-sm);
+}
+
+.hint {
+  color: var(--ds-color-text-muted);
+}
+
+.error {
+  font-weight: var(--ds-font-weight-medium);
+}
+
+/* The scale responds to its own width (container query), not the viewport's. */
+.scale {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--ds-space-2);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(var(--scale-n, 4), minmax(0, 1fr));
+  overflow: hidden;
+  border: var(--ds-border-width) solid var(--ds-color-border-strong);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-surface);
+}
+
+.segment {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 2.75rem;
+  padding: var(--ds-space-2);
+  border-inline-start: var(--ds-border-width) solid var(--ds-color-border);
+  color: var(--ds-color-text-muted);
+  font-size: var(--ds-font-size-sm);
+  line-height: 1.3;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    color var(--ds-duration-fast) var(--ds-easing-standard),
+    background-color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.segment:first-child {
+  border-inline-start: 0;
+}
+
+/* The radio is the control; the segment is its visible face. */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.text {
+  position: relative;
+  pointer-events: none;
+}
+
+.segment:hover:not(:has(:disabled, :checked)) {
+  background: color-mix(in srgb, var(--ds-color-text) 5%, transparent);
+  color: var(--ds-color-text);
+}
+
+.segment:has(:checked) {
+  background: var(--ds-color-accent);
+  color: var(--ds-color-on-accent);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.segment:has(:focus-visible) {
+  z-index: 1;
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: calc(-1 * var(--ds-focus-ring-width));
+}
+
+.segment:has(:disabled) {
+  cursor: not-allowed;
+  color: var(--ds-color-text-subtle);
+}
+
+.row:has([aria-invalid='true']) {
+  border-color: var(--ds-color-danger);
+}
+
+/* The rail is a pointer affordance only (aria-hidden). */
+.rail {
+  position: relative;
+  height: 2px;
+  margin-inline: var(--ds-space-1);
+  border-radius: 2px;
+  background: var(--ds-color-border);
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-color-border-strong);
+  translate: -50% -50%;
+  opacity: 0;
+  transition:
+    left var(--ds-duration-slow) var(--ds-easing-emphasized),
+    opacity var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.thumb[data-set] {
+  opacity: 1;
+  background: var(--ds-color-accent);
+}
+
+/* Narrow container: two rows of labels instead of slivers; the single-row rail would mislead. */
+@container (max-width: 30rem) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .segment {
+    border-top: var(--ds-border-width) solid var(--ds-color-border);
+  }
+
+  .segment:nth-child(odd) {
+    border-inline-start: 0;
+  }
+
+  .segment:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .rail {
+    display: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .segment:has(:checked) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .thumb[data-set] {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}

@@ -1,0 +1,25 @@
+.iconButton {
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+.sm {
+  width: 2rem;
+}
+
+.md {
+  width: 2.5rem;
+}
+
+.lg {
+  width: 3rem;
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.icon > svg {
+  width: 1.25em;
+  height: 1.25em;
+}

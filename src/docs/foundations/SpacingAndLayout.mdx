@@ -1,0 +1,106 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { Button } from '../../components/Button/Button';
+import { Stack } from '../../components/Stack/Stack';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-spacing.webp';
+import { DocExample } from '../DocExample';
+
+<Meta title="Foundations/Spacing and layout" />
+
+<DocBanner title="Spacing and layout" eyebrow="Foundations" src={banner} />
+
+All spacing sits on a **4px grid**. The scale is deliberately short, so neighbouring components
+agree without anyone measuring.
+
+<div style={{ display: 'grid', gap: 8, marginBlock: 16 }}>
+  {[
+    [1, 'Icon to text inside a badge'],
+    [2, 'Icon to label in a button; label to input'],
+    [3, 'Between buttons in a row; tight lists'],
+    [4, 'Default gap between related controls'],
+    [5, 'Between fields in a form'],
+    [6, 'Card padding; between groups'],
+    [8, 'Between page sections'],
+    [10, 'Large section breaks'],
+    [12, 'Page-level breathing room'],
+  ].map(([n, use]) => (
+    <div key={n} style={{ display: 'grid', gridTemplateColumns: '120px 140px 48px 1fr', alignItems: 'center', gap: 16 }}>
+      <code>--ds-space-{n}</code>
+      <div style={{ width: `var(--ds-space-${n})`, height: 16, background: 'var(--ds-color-accent)', borderRadius: 2 }} />
+      <span style={{ color: '#55555f', fontSize: 14 }}>{n * 4}px</span>
+      <span style={{ fontSize: 14 }}>{use}</span>
+    </div>
+  ))}
+</div>
+
+`--ds-space-0` is there for resets. There is no 7, 9 or 11 on purpose: if a gap needs to sit
+between two steps, the layout usually needs a different grouping instead.
+
+## Rules of thumb
+
+- **Closer means related.** The gap inside a group must be smaller than the gap between groups,
+  e.g. label to input (`2`) is less than field to field (`5`), which is less than section to section (`8`).
+- **Spacing belongs to the parent.** Components have no outer margin. Put the gap on the container
+  (a `Stack`, a grid, a flex row) rather than adding margins to children.
+- **Use tokens in your own CSS too**: `padding: var(--ds-space-4) var(--ds-space-6)`. Raw pixel
+  values drift.
+- **Touch targets** should be at least 24 by 24 CSS pixels (WCAG 2.5.8); the `md` control size
+  already exceeds this. Keep the gap between small targets at `2` or more.
+
+## Stack
+
+`Stack` is the layout primitive: a flex row or column whose `gap` takes a spacing step.
+
+<DocExample>
+<Stack direction="row" gap={3} wrap>
+  <Button variant="secondary">Cancel</Button>
+  <Button>Save changes</Button>
+</Stack>
+</DocExample>
+
+```tsx
+<Stack gap={5}>                       {/* a form: fields 20px apart */}
+  <TextField label="Name" />
+  <TextField label="Email" type="email" />
+  <Stack direction="row" gap={3} justify="end">
+    <Button variant="secondary">Cancel</Button>
+    <Button type="submit">Save</Button>
+  </Stack>
+</Stack>
+```
+
+| Prop        | Values                                                          | Default    |
+| ----------- | --------------------------------------------------------------- | ---------- |
+| `direction` | `'column'`, `'row'`                                             | `'column'` |
+| `gap`       | `0 1 2 3 4 5 6 8 10 12`                                         | `4`        |
+| `align`     | any `align-items` value                                         |            |
+| `justify`   | any `justify-content` value                                     |            |
+| `wrap`      | `boolean`                                                       | `false`    |
+| `as`        | `'div'`, `'ul'`, `'ol'`, `'section'`, `'nav'`, `'header'`, `'footer'` | `'div'` |
+
+Pick `as` by meaning. A stack of cards that are a list of things should be `as="ul"` with `<li>`
+children, so screen readers announce "list, 6 items". A row of page links is a `nav`.
+
+See the [Stack stories](?path=/docs/components-layout-stack--docs) for live examples.
+
+## Page layout
+
+The library doesn't ship a grid or page shell; use CSS grid with the spacing tokens:
+
+```css
+.page {
+  display: grid;
+  gap: var(--ds-space-8);
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: var(--ds-space-6) var(--ds-space-4);
+}
+
+@media (min-width: 48rem) {
+  .page { grid-template-columns: 16rem 1fr; padding-inline: var(--ds-space-8); }
+}
+```
+
+Keep landmarks semantic: one `<main>`, `<nav>` for navigation, `<header>`/`<footer>` for page
+furniture, `<aside>` for side content. Layout should reflow down to 320px wide without horizontal
+scrolling (WCAG 1.4.10).

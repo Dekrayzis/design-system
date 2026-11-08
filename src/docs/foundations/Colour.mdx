@@ -1,0 +1,178 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-colour.webp';
+
+<Meta title="Foundations/Colour" />
+
+<DocBanner title="Colour" eyebrow="Foundations" src={banner} />
+
+Colour comes in two layers. **Primitives** (`--ds-palette-*`) are raw hex values with no meaning.
+**Semantic tokens** (`--ds-color-*`) name a job, such as "muted text" or "danger fill", and point at
+a primitive. Components only ever read semantic tokens, so a theme or a rebrand remaps one layer and
+every component follows.
+
+```css
+/* Do: say what the colour is for */
+.notice { color: var(--ds-color-warning-text); background: var(--ds-color-warning-subtle); }
+
+/* Don't: reach past the semantic layer */
+.notice { color: var(--ds-palette-amber-700); background: #fffbeb; }
+```
+
+## Semantic roles
+
+| Role                    | Tokens                                                   | Use it for                                                                                   |
+| ----------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Background              | `bg`, `bg-subtle`, `bg-muted`                            | The page, quiet bands and wells, hover fills on neutral controls.                            |
+| Surface                 | `surface`, `surface-raised`                              | Cards and panels; `raised` for things that float (dialogs, menus, toasts).                   |
+| Overlay                 | `overlay`                                                | The scrim behind a modal `Dialog`.                                                           |
+| Text                    | `text`, `text-muted`, `text-subtle`, `text-inverse`      | Body copy, secondary copy (hints, captions), placeholders and metadata, text on dark fills. |
+| Border                  | `border`, `border-strong`                                | Dividers and card edges; `strong` for control outlines that must be seen (inputs, checkboxes). |
+| Accent                  | `accent`, `accent-hover`, `accent-subtle`, `accent-text`, `on-accent` | Primary actions, selected state, links. `on-accent` is text placed on an `accent` fill.  |
+| Danger                  | `danger`, `danger-hover`, `danger-subtle`, `danger-text`, `on-danger` | Destructive actions and errors.                                                   |
+| Status                  | `success-*`, `warning-*`, `info-*` (`subtle`, `text`)    | Alerts, badges and toasts. Pair a `subtle` background with its own `text`.                   |
+| Focus                   | `focus`                                                  | Keyboard focus rings only.                                                                   |
+
+Every role has a light and a dark value. Use the **Theme** toolbar to flip the swatches on the
+[Tokens](?path=/docs/foundations-tokens--docs) page.
+
+### Pairing rules
+
+- Put `*-text` on `*-subtle` of the **same** role (`warning-text` on `warning-subtle`), never across
+  roles.
+- Put `on-accent` on `accent` and `on-danger` on `danger`. Never put `text` on a solid accent fill.
+- `text-subtle` is for non-essential text only: it meets 4.5:1 on the page background but has the
+  least headroom. Anything a user must read uses `text` or `text-muted`.
+- Never use colour as the only signal. Errors also have a message and `aria-invalid`; selected tabs
+  and buttons also change shape or weight; badges and alerts carry words, not just a tint.
+
+## What colours mean
+
+Users learn what a colour means from every product they've used, and from yours. The aim isn't
+to pick colours for their supposed emotional effect (that research is mixed and depends heavily on
+context) but to keep each colour's meaning **predictable**.
+
+| Colour  | Role                | People read it as                     | Use it for                                                   |
+| ------- | ------------------- | ------------------------------------- | ------------------------------------------------------------ |
+| Indigo  | `accent`            | "This is the brand; this is the main action" | Primary buttons, selected states, links, focus.        |
+| Red     | `danger`            | "Stop, something is wrong or can't be undone" | Errors, destructive actions (`Button variant="danger"`). |
+| Amber   | `warning`           | "Careful, look before you continue"   | Things that may go wrong soon: quotas, expiring trials.      |
+| Green   | `success`           | "Done, it worked"                     | Confirmations, healthy or live status.                        |
+| Blue    | `info`              | "Worth knowing, nothing to do"        | Neutral notices and tips.                                    |
+| Grey    | `text-*`, `border`, neutral `Badge` | "Background detail"   | Secondary information, metadata, inactive states.            |
+
+### Keep meanings consistent
+
+- **One colour, one meaning.** Once red means "error", don't use it to decorate a heading or a
+  chart series. Every off-meaning use weakens the signal where it matters.
+- **Match tone to consequence.** A destructive action gets `danger`, even if the design would look
+  better in the accent. A neutral status gets a neutral `Badge`, not a green one.
+- **Don't swap tones for emphasis.** If something needs more attention, change its position, size
+  or wording, not its colour. A warning that's styled as an error trains people to ignore errors.
+- **Pair colour with words and icons.** `Alert` and `Toast` show an icon for each tone and always
+  carry a message; badges carry a label. This covers colour-blind users (about 1 in 12 men), forced
+  colours mode and screen readers, which see none of the colour.
+
+### Culture
+
+These associations are common in Western interfaces, not universal. Red signals luck and
+celebration in China; white is linked with mourning in parts of East Asia; in East Asian stock
+markets red means prices going **up**. For an international audience, let the words and icons carry
+the meaning, and treat colour as reinforcement.
+
+### Choosing a brand accent
+
+When you [rebrand](?path=/docs/foundations-theming--docs), keep the accent visibly apart from the
+status hues, or users may read the brand colour as a status:
+
+- Avoid reds and oranges close to `danger` or `warning`, and greens close to `success`.
+- The default indigo already sits near the `info` blue. That works because info tones only appear
+  in alerts and badges with an icon or label, never as a bare fill. If your accent is a plain blue,
+  check that info alerts still read as distinct.
+- Re-check contrast after any change (see below).
+
+## Contrast guarantees
+
+`src/styles/tokens.test.ts` reads `tokens.css` and fails the build if, in **either** theme:
+
+| Check                                                                 | Minimum | WCAG   |
+| --------------------------------------------------------------------- | ------- | ------ |
+| `text`, `text-muted`, `accent-text`, `danger-text` on every surface   | 4.5:1   | 1.4.3  |
+| `on-accent` on `accent`, `on-danger` on `danger`                      | 4.5:1   | 1.4.3  |
+| `border-strong` (control borders) on every surface                    | 3:1     | 1.4.11 |
+| `focus` (focus rings) on every surface                                | 3:1     | 1.4.11 |
+
+"Every surface" means `bg`, `bg-subtle`, `surface` and `surface-raised`. If you rebrand, run
+`npm test` so the same checks cover your colours.
+
+## Primitive palette
+
+The raw scales. Reach for these only when **adding or remapping a semantic token** in
+`tokens.css`, never from component CSS.
+
+<ColorPalette>
+  <ColorItem
+    title="Neutral"
+    subtitle="--ds-palette-neutral-*"
+    colors={{
+      0: '#ffffff',
+      50: '#f7f7f8',
+      100: '#eeeef0',
+      200: '#dcdce0',
+      300: '#c2c2c9',
+      400: '#9a9aa5',
+      450: '#868691',
+      500: '#71717d',
+      600: '#55555f',
+      700: '#3d3d45',
+      800: '#26262c',
+      900: '#18181c',
+      950: '#0e0e11',
+    }}
+  />
+  <ColorItem
+    title="Indigo"
+    subtitle="--ds-palette-indigo-* (accent, focus)"
+    colors={{ 50: '#eef0ff', 100: '#dfe2ff', 300: '#a5abff', 400: '#8187fb', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#241f66' }}
+  />
+  <ColorItem
+    title="Red"
+    subtitle="--ds-palette-red-* (danger)"
+    colors={{ 50: '#fef2f2', 400: '#f87171', 600: '#dc2626', 700: '#b91c1c', 900: '#4c1515' }}
+  />
+  <ColorItem
+    title="Green"
+    subtitle="--ds-palette-green-* (success)"
+    colors={{ 50: '#ecfdf3', 400: '#4ade80', 600: '#15803d', 900: '#0f3a22' }}
+  />
+  <ColorItem
+    title="Amber"
+    subtitle="--ds-palette-amber-* (warning)"
+    colors={{ 50: '#fffbeb', 400: '#fbbf24', 700: '#a15c07', 900: '#452a06' }}
+  />
+  <ColorItem
+    title="Blue"
+    subtitle="--ds-palette-blue-* (info)"
+    colors={{ 50: '#eff6ff', 400: '#60a5fa', 700: '#1d4ed8', 900: '#172a55' }}
+  />
+</ColorPalette>
+
+`neutral-450` exists for one reason: it is the lightest grey that still reaches 3:1 against every
+light surface, so it is what `border-strong` uses for control outlines.
+
+## How the themes map
+
+Light uses the darker end of each scale for text and fills; dark flips to the lighter end and drops
+backgrounds to the 900s. A few examples:
+
+| Token                | Light            | Dark             |
+| -------------------- | ---------------- | ---------------- |
+| `--ds-color-bg`      | `neutral-0`      | `neutral-950`    |
+| `--ds-color-surface` | `neutral-0`      | `neutral-900`    |
+| `--ds-color-text`    | `neutral-900`    | `neutral-50`     |
+| `--ds-color-accent`  | `indigo-600`     | `indigo-400`     |
+| `--ds-color-on-accent` | `neutral-0`    | `neutral-950`    |
+| `--ds-color-danger-subtle` | `red-50`   | `red-900`        |
+| `--ds-color-focus`   | `indigo-500`     | `indigo-300`     |
+
+See [Theming](?path=/docs/foundations-theming--docs) for how themes are selected and how to rebrand.

@@ -1,0 +1,78 @@
+/* Country picker and number input joined into one control. */
+.row {
+  display: flex;
+  min-width: 0;
+}
+
+.country {
+  flex: none;
+}
+
+/* The country trigger is a <button> rendered by Select; square off the edge it shares. */
+.country button {
+  width: auto;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.number {
+  flex: 1;
+  min-width: 0;
+  margin-inline-start: calc(-1 * var(--ds-border-width));
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* Whichever half is hovered or focused draws its full border on top of the shared edge. */
+.country button:hover,
+.number:hover {
+  position: relative;
+}
+
+.country button:focus-visible,
+.number:focus-visible,
+.number[aria-invalid='true'] {
+  position: relative;
+  z-index: 1;
+}
+
+.flag {
+  display: block;
+  width: 1.25rem;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  border-radius: 2px;
+  /* A hairline so white-edged flags (Japan, Poland) don't vanish on a white surface. */
+  box-shadow: 0 0 0 1px var(--ds-color-border);
+}
+
+.flagPlaceholder {
+  background: var(--ds-color-bg-muted);
+}
+
+.dialCode {
+  color: var(--ds-color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.optionName {
+  flex: 1;
+}
+
+.option {
+  display: flex;
+  gap: var(--ds-space-2);
+  width: 100%;
+}
+
+@media (forced-colors: active) {
+  /* Select paints the active option with Highlight; a muted dialling code would vanish on it. */
+  .dialCode {
+    color: inherit;
+  }
+
+  .flag {
+    box-shadow: none;
+    outline: 1px solid CanvasText;
+  }
+}

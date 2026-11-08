@@ -1,0 +1,263 @@
+import { Meta, Typeset } from '@storybook/addon-docs/blocks';
+import { Heading } from '../../components/Heading/Heading';
+import { Stack } from '../../components/Stack/Stack';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-typography.webp';
+import { DocExample } from '../DocExample';
+
+<Meta title="Foundations/Typography" />
+
+<DocBanner title="Typography" eyebrow="Foundations" src={banner} />
+
+One sans family for everything, a seven-step size scale, four weights and two line heights. Body
+text is set once on `<body>` by `base.css` (`--ds-font-sans`, `--ds-font-size-md`,
+`--ds-line-height-normal`), and form controls inherit it, so most text needs no styling at all.
+
+## Families
+
+| Token            | Stack                                                                       | Use                                |
+| ---------------- | --------------------------------------------------------------------------- | ---------------------------------- |
+| `--ds-font-sans` | `'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif` | All interface and body text. |
+| `--ds-font-mono` | `ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace`       | Code, keys, IDs and tabular figures. |
+
+The library does **not** bundle Inter. Load it yourself (self-hosted or from a font service) or the
+stack falls back to the platform UI font, which is designed to work too. To use a different
+typeface, or to load one from Google Fonts or Adobe Fonts, see "Using your own font" below.
+
+## Size scale
+
+<Typeset
+  fontFamily="var(--ds-font-sans)"
+  fontSizes={['0.75rem', '0.875rem', '1rem', '1.125rem', '1.375rem', '1.75rem', '2.25rem']}
+  fontWeight={400}
+  sampleText="Pack my box with five dozen liquor jugs"
+/>
+
+| Token                | Size     | px  | Typical use                                              |
+| -------------------- | -------- | --- | -------------------------------------------------------- |
+| `--ds-font-size-xs`  | 0.75rem  | 12  | Small buttons, counters, fine print. Never for sentences.|
+| `--ds-font-size-sm`  | 0.875rem | 14  | Labels, hints, errors, buttons, dense tables.           |
+| `--ds-font-size-md`  | 1rem     | 16  | Body text, input values, large buttons. The default.    |
+| `--ds-font-size-lg`  | 1.125rem | 18  | Lead paragraphs, `h4`.                                   |
+| `--ds-font-size-xl`  | 1.375rem | 22  | `h3`, dialog titles, card titles.                        |
+| `--ds-font-size-2xl` | 1.75rem  | 28  | `h2`, section titles.                                    |
+| `--ds-font-size-3xl` | 2.25rem  | 36  | `h1`, page titles.                                       |
+
+Sizes are in `rem`, so the whole scale follows the user's browser font size. Keep input values at
+`md` or larger: iOS zooms the page when a focused input is smaller than 16px.
+
+## Weights and line height
+
+| Token                        | Value | Use                                                |
+| ---------------------------- | ----- | -------------------------------------------------- |
+| `--ds-font-weight-regular`   | 400   | Body text.                                         |
+| `--ds-font-weight-medium`    | 500   | Labels, buttons, tabs.                             |
+| `--ds-font-weight-semibold`  | 600   | Small headings (`sm`, `md`), emphasis in UI.       |
+| `--ds-font-weight-bold`      | 700   | Headings `lg` and up.                              |
+| `--ds-line-height-tight`     | 1.2   | Headings and single-line controls.                 |
+| `--ds-line-height-normal`    | 1.5   | Anything that can wrap onto several lines.         |
+
+## Headings: level is not size
+
+`Heading` separates the two decisions. `level` comes from the document outline (one `h1` per page,
+no skipped levels); `size` is purely visual and defaults to the level's natural size. A compact
+sidebar can use an `h2` that looks small, and a marketing card can use an `h3` that looks big,
+without breaking the outline screen reader users navigate by.
+
+<DocExample>
+<Stack gap={3}>
+  <Heading level={1} size="3xl">Level 1, size 3xl</Heading>
+  <Heading level={2} size="2xl">Level 2, size 2xl</Heading>
+  <Heading level={3} size="xl">Level 3, size xl</Heading>
+  <Heading level={4} size="lg">Level 4, size lg</Heading>
+  <Heading level={5} size="md">Level 5, size md</Heading>
+  <Heading level={6} size="sm">Level 6, size sm</Heading>
+</Stack>
+</DocExample>
+
+```tsx
+// A dialog title is an h2 in the outline but shouldn't shout.
+<Heading level={2} size="xl">Rename project</Heading>
+```
+
+Headings use `text-wrap: balance` and slightly tightened tracking at large sizes, so multi-line
+titles break evenly.
+
+## Using your own font
+
+Every component reads its font from two tokens, so changing the typeface means setting them once,
+after importing the library's stylesheet:
+
+```css
+:root {
+  --ds-font-sans: 'Your Font', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ds-font-mono: 'Your Mono', ui-monospace, 'Cascadia Code', Consolas, monospace; /* optional */
+}
+```
+
+Keep the system fonts after yours: they show while your font loads, and if it ever fails.
+
+### What to load
+
+Components use four weights: **400** (body), **500** (labels, buttons, tabs), **600** (small
+headings) and **700** (headings). Load all four, or one variable font that covers 400–700. If a
+weight is missing, the browser fakes it by smearing or thinning the nearest one. Italics are only
+needed if your content uses them. Prefer WOFF2 files, and load only the character sets your
+languages need.
+
+### Self-hosted or custom fonts
+
+Put the WOFF2 files in your app and declare them with `@font-face`:
+
+```css
+@font-face {
+  font-family: 'Brand Sans';
+  src: url('/fonts/brand-sans-variable.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ds-font-sans: 'Brand Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+```
+
+`font-display: swap` shows text straight away in the fallback font, then swaps in yours. Preload
+the main file so the swap happens early:
+
+```html
+<link rel="preload" href="/fonts/brand-sans-variable.woff2" as="font" type="font/woff2" crossorigin />
+```
+
+In Next.js, `next/font/local` does the `@font-face`, preloading and fallback sizing for you (see
+"Next.js" below).
+
+### Google Fonts
+
+Request only the weights you need, with `display=swap`:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+/>
+```
+
+For a variable font, ask for the range instead: `family=Inter:wght@400..700`. Then point the token
+at the family name exactly as Google spells it.
+
+**Privacy:** loading fonts from Google's servers sends each visitor's IP address to Google. In 2022
+a German court ruled that this breached GDPR without consent. To avoid the question entirely,
+self-host the files (Google Fonts are openly licensed) or use `next/font/google`, which downloads
+them at build time and serves them from your own domain.
+
+### Adobe Fonts
+
+Adobe Fonts are served from Adobe's servers through a **web project**; the licence doesn't allow
+self-hosting the files.
+
+1. In Adobe Fonts, add the family to a web project and tick the weights **400, 500, 600 and 700**.
+   Fonts you don't include fall back to faked weights.
+2. In the project's settings, set **font-display** to `swap`.
+3. Add the project's stylesheet to `<head>`:
+
+   ```html
+   <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+   <link rel="stylesheet" href="https://use.typekit.net/<project-id>.css" />
+   ```
+
+4. Use the family name exactly as the web project shows it, which is usually lowercase with hyphens:
+
+   ```css
+   :root {
+     --ds-font-sans: 'proxima-nova', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+   }
+   ```
+
+Every font added to the project is downloaded by every page that uses it, so keep each project to
+the families and weights the site actually uses.
+
+### Next.js
+
+`next/font` (`/google` for Google Fonts, `/local` for your own files) self-hosts the files,
+preloads them and generates a size-matched fallback, so text doesn't jump when the font arrives.
+Expose it as a CSS variable and point the token at it:
+
+```tsx
+// app/layout.tsx
+import { Inter } from 'next/font/google';
+
+const brand = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-brand' });
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={brand.variable}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```css
+:root {
+  --ds-font-sans: var(--font-brand), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+```
+
+Adobe Fonts can't go through `next/font`; add the web project's `<link>` in the root layout's
+`<head>`.
+
+### Avoiding layout shift
+
+When the real font replaces the fallback, text can change width and push the layout around. Outside
+Next.js, define a fallback face whose metrics match your font, and list it right after it:
+
+```css
+@font-face {
+  font-family: 'Brand Sans Fallback';
+  src: local('Arial');
+  size-adjust: 104%;
+  ascent-override: 92%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --ds-font-sans: 'Brand Sans', 'Brand Sans Fallback', ui-sans-serif, system-ui, sans-serif;
+}
+```
+
+The numbers depend on the font. Tools such as Fontaine or Capsize calculate them for you.
+
+### Content Security Policy
+
+If your site sends a CSP, allow the font hosts:
+
+| Source       | `style-src`                      | `font-src`                 |
+| ------------ | -------------------------------- | -------------------------- |
+| Google Fonts | `https://fonts.googleapis.com`   | `https://fonts.gstatic.com` |
+| Adobe Fonts  | `https://use.typekit.net`        | `https://use.typekit.net`  |
+| Self-hosted  | (nothing extra)                  | `'self'`                   |
+
+### Check before you ship
+
+- **Small text.** Look at 12px and 14px text (badges, labels, hints, small buttons). Fonts with a
+  small x-height (short lowercase letters) or tight spacing can get hard to read at those sizes.
+- **Every control size.** Buttons, inputs and selects at `sm`, `md` and `lg`. A wider font can make
+  labels wrap or truncate.
+- **Characters.** The font must cover every language you show, plus `’ – …` and currency symbols.
+- **Licence.** Web use needs a licence that covers embedding on websites, and some licences limit
+  page views or domains.
+- **Contrast.** Thin or light fonts read as lower contrast even at the same colour. If yours is
+  light, consider nudging body text to weight 500.
+
+## Guidelines
+
+- Use sentence case everywhere: titles, buttons, labels, tabs.
+- Keep running text to roughly 60–75 characters per line (`max-width: 65ch` works well).
+- Don't use font size alone to imply structure; use a real heading.
+- Don't set `line-height` below `tight` or letter-spacing on body text.
+- Prefer weight and colour (`text-muted`) to size changes for hierarchy inside a component.

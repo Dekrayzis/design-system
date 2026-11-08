@@ -1,0 +1,196 @@
+.menu {
+  display: inline-block;
+}
+
+.chevron {
+  transition: rotate var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+[aria-expanded='true'] .chevron {
+  rotate: 180deg;
+}
+
+/* ---- Popup ---- */
+.content {
+  /* Override the popover UA defaults (centred, inset: 0). Position comes from useAnchorPosition. */
+  position: fixed;
+  inset: auto;
+  z-index: var(--ds-z-dialog);
+  min-width: 12rem;
+  max-width: calc(100vw - 16px);
+  margin: 0;
+  padding: var(--ds-space-1);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: var(--ds-border-width) solid var(--ds-color-border);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-surface-raised);
+  color: var(--ds-color-text);
+  box-shadow: var(--ds-shadow-lg);
+}
+
+.content[hidden] {
+  display: none;
+}
+
+.content[data-state='open'] {
+  animation: enter var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.content[data-side='top'] {
+  animation-name: enter-up;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content[data-state='open'] {
+    animation: none;
+  }
+}
+
+:root[data-motion='paused'] .content[data-state='open'] {
+  animation: none;
+}
+
+/* ---- Items ---- */
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+  width: 100%;
+  min-height: 2.25rem;
+  margin: 0;
+  padding: var(--ds-space-1) var(--ds-space-3) var(--ds-space-1) var(--ds-space-2);
+  border: 0;
+  border-radius: var(--ds-radius-sm);
+  outline: var(--ds-focus-ring-width) solid transparent;
+  outline-offset: calc(-1 * var(--ds-focus-ring-width));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--ds-font-size-sm);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* The focused item is the highlighted one, for pointer and keyboard alike. A tint of the text
+   colour reads on the raised surface in both themes. */
+.item:focus {
+  background: color-mix(in srgb, var(--ds-color-text) 9%, transparent);
+}
+
+.item:focus-visible {
+  outline-color: var(--ds-color-focus);
+}
+
+.item[aria-disabled='true'] {
+  color: var(--ds-color-text-subtle);
+  cursor: not-allowed;
+}
+
+.item[data-destructive]:not([aria-disabled='true']) {
+  color: var(--ds-color-danger-text);
+}
+
+.item[data-destructive]:not([aria-disabled='true']):focus {
+  background: var(--ds-color-danger-subtle);
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--ds-color-text-muted);
+}
+
+.icon > svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.item:focus .icon,
+.item[data-destructive] .icon,
+.item[aria-disabled='true'] .icon {
+  color: inherit;
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+}
+
+.shortcut {
+  flex-shrink: 0;
+  margin-inline-start: var(--ds-space-4);
+  color: var(--ds-color-text-muted);
+  font-family: inherit;
+  font-size: var(--ds-font-size-xs);
+  letter-spacing: 0.02em;
+}
+
+.item[data-destructive] .shortcut,
+.item[aria-disabled='true'] .shortcut {
+  color: inherit;
+}
+
+/* ---- Groups and separators ---- */
+.group + .group,
+.item + .group {
+  margin-top: var(--ds-space-1);
+}
+
+.groupLabel {
+  padding: var(--ds-space-2) var(--ds-space-2) var(--ds-space-1);
+  color: var(--ds-color-text-subtle);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.separator {
+  height: var(--ds-border-width);
+  margin: var(--ds-space-1) calc(-1 * var(--ds-space-1));
+  background: var(--ds-color-border);
+}
+
+/* Windows High Contrast / forced colours: system colours replace ours, so restate state with them. */
+@media (forced-colors: active) {
+  .item:focus,
+  .item[data-destructive]:not([aria-disabled='true']):focus {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  /* forced-color-adjust is inherited, so the hint would keep its own colour on Highlight. */
+  .item:focus .shortcut {
+    color: inherit;
+  }
+
+  .item:focus-visible {
+    outline-color: CanvasText;
+  }
+
+  .item[aria-disabled='true']:not(:focus) {
+    color: GrayText;
+  }
+
+  .separator {
+    background: CanvasText;
+  }
+}

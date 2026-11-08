@@ -1,0 +1,122 @@
+/* The wrapper takes the image's size; a skeleton sits behind while it loads. */
+.wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+/* `fill`: the caller sizes and positions the box; the wrapper fills it. */
+.fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* Zero-specificity defaults, so wherever the image is used can override fit and size. */
+:where(.img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+:where(.fill) :where(.img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Still loading once interactive: hidden, then faded in. An animation (not a transition) so it
+   never fights the image's own transitions, and `backwards` so it lets go of opacity at the end. */
+.waiting > .img {
+  opacity: 0;
+}
+
+.revealed > .img {
+  animation: image-in 450ms ease backwards;
+}
+
+/* The skeleton, faded in after 150ms so a fast or cached image never flashes it. */
+.loading:not(.bare)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      100deg,
+      transparent 30%,
+      color-mix(in srgb, var(--ds-color-text) 7%, transparent) 50%,
+      transparent 70%
+    )
+    0 0 / 250% 100%,
+    var(--ds-color-bg-muted);
+  opacity: 0;
+  animation:
+    skeleton-show 200ms 150ms ease-out forwards,
+    skeleton-shimmer 1.4s 150ms linear infinite;
+}
+
+.fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 100%;
+  min-height: 6rem;
+  padding: var(--ds-space-4);
+  border: var(--ds-border-width) dashed var(--ds-color-border-strong);
+  border-radius: inherit;
+  background: var(--ds-color-bg-subtle);
+  color: var(--ds-color-text-muted);
+  font-size: var(--ds-font-size-sm);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.fill .fallback {
+  height: 100%;
+}
+
+/* Less motion: a static placeholder and no fade. */
+@media (prefers-reduced-motion: reduce) {
+  .loading:not(.bare)::before {
+    animation: skeleton-show 1ms 150ms forwards;
+  }
+
+  .revealed > .img {
+    animation: none;
+  }
+}
+
+:root[data-motion='paused'] .loading:not(.bare)::before {
+  animation: skeleton-show 1ms 150ms forwards;
+}
+
+:root[data-motion='paused'] .revealed > .img {
+  animation: none;
+}
+
+@keyframes image-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes skeleton-show {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 150% 0, 0 0;
+  }
+
+  to {
+    background-position: -150% 0, 0 0;
+  }
+}

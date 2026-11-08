@@ -1,0 +1,74 @@
+.alert {
+  --alert-bg: var(--ds-color-info-subtle);
+  --alert-fg: var(--ds-color-info-text);
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-3);
+  padding: var(--ds-space-3) var(--ds-space-4);
+  border: var(--ds-border-width) solid color-mix(in srgb, var(--alert-fg) 30%, transparent);
+  border-radius: var(--ds-radius-md);
+  background: var(--alert-bg);
+  color: var(--ds-color-text);
+}
+
+.success {
+  --alert-bg: var(--ds-color-success-subtle);
+  --alert-fg: var(--ds-color-success-text);
+}
+
+.warning {
+  --alert-bg: var(--ds-color-warning-subtle);
+  --alert-fg: var(--ds-color-warning-text);
+}
+
+.danger {
+  --alert-bg: var(--ds-color-danger-subtle);
+  --alert-fg: var(--ds-color-danger-text);
+}
+
+.info {
+  /* uses defaults */
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--alert-fg);
+}
+
+.body {
+  flex: 1;
+  display: grid;
+  gap: var(--ds-space-1);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.content {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-text-muted);
+}
+
+.content > :first-child {
+  margin-top: 0;
+}
+
+.content > :last-child {
+  margin-bottom: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-2);
+  margin-top: var(--ds-space-2);
+}
+
+.dismiss {
+  margin: -4px -8px -4px 0;
+}

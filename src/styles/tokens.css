@@ -1,0 +1,252 @@
+/*
+ * Design tokens.
+ *
+ * Primitives (--ds-palette-*) are raw values and never used by components directly.
+ * Semantic tokens (--ds-color-*, --ds-space-*, ...) are what components consume, so a theme
+ * only has to remap the semantic layer.
+ *
+ * Theme selection:
+ *   - default follows the OS via prefers-color-scheme
+ *   - [data-theme="light"] / [data-theme="dark"] on any ancestor forces a theme
+ */
+
+:root {
+  /* ---- Primitives ---------------------------------------------------- */
+  --ds-palette-neutral-0: #ffffff;
+  --ds-palette-neutral-50: #f7f7f8;
+  --ds-palette-neutral-100: #eeeef0;
+  --ds-palette-neutral-200: #dcdce0;
+  --ds-palette-neutral-300: #c2c2c9;
+  --ds-palette-neutral-400: #9a9aa5;
+  /* Lightest grey with 3:1 contrast on every light surface (WCAG 1.4.11): control borders. */
+  --ds-palette-neutral-450: #868691;
+  --ds-palette-neutral-500: #71717d;
+  --ds-palette-neutral-600: #55555f;
+  --ds-palette-neutral-700: #3d3d45;
+  --ds-palette-neutral-800: #26262c;
+  --ds-palette-neutral-900: #18181c;
+  --ds-palette-neutral-950: #0e0e11;
+
+  --ds-palette-indigo-50: #eef0ff;
+  --ds-palette-indigo-100: #dfe2ff;
+  --ds-palette-indigo-300: #a5abff;
+  --ds-palette-indigo-400: #8187fb;
+  --ds-palette-indigo-500: #6366f1;
+  --ds-palette-indigo-600: #4f46e5;
+  --ds-palette-indigo-700: #4338ca;
+  --ds-palette-indigo-900: #241f66;
+
+  --ds-palette-green-50: #ecfdf3;
+  --ds-palette-green-400: #4ade80;
+  --ds-palette-green-600: #15803d;
+  --ds-palette-green-900: #0f3a22;
+
+  --ds-palette-amber-50: #fffbeb;
+  --ds-palette-amber-400: #fbbf24;
+  --ds-palette-amber-700: #a15c07;
+  --ds-palette-amber-900: #452a06;
+
+  --ds-palette-red-50: #fef2f2;
+  --ds-palette-red-400: #f87171;
+  --ds-palette-red-600: #dc2626;
+  --ds-palette-red-700: #b91c1c;
+  --ds-palette-red-900: #4c1515;
+
+  --ds-palette-blue-50: #eff6ff;
+  --ds-palette-blue-400: #60a5fa;
+  --ds-palette-blue-700: #1d4ed8;
+  --ds-palette-blue-900: #172a55;
+
+  /* ---- Typography ---------------------------------------------------- */
+  --ds-font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ds-font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+
+  --ds-font-size-xs: 0.75rem;
+  --ds-font-size-sm: 0.875rem;
+  --ds-font-size-md: 1rem;
+  --ds-font-size-lg: 1.125rem;
+  --ds-font-size-xl: 1.375rem;
+  --ds-font-size-2xl: 1.75rem;
+  --ds-font-size-3xl: 2.25rem;
+
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-semibold: 600;
+  --ds-font-weight-bold: 700;
+
+  --ds-line-height-tight: 1.2;
+  --ds-line-height-normal: 1.5;
+
+  /* ---- Spacing (4px grid) ------------------------------------------- */
+  --ds-space-0: 0;
+  --ds-space-1: 0.25rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-10: 2.5rem;
+  --ds-space-12: 3rem;
+
+  /* ---- Radius, borders, elevation, motion --------------------------- */
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-full: 999px;
+
+  --ds-border-width: 1px;
+  --ds-focus-ring-width: 2px;
+  --ds-focus-ring-offset: 2px;
+
+  --ds-duration-fast: 120ms;
+  --ds-duration-normal: 200ms;
+  --ds-duration-slow: 420ms;
+  --ds-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  /* Fast start, long gentle settle: for things that travel, like a sliding thumb. */
+  --ds-easing-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --ds-z-dialog: 1000;
+  --ds-z-tooltip: 1100;
+
+  /* ---- Semantic colours: light (default) ---------------------------- */
+  color-scheme: light;
+  --ds-color-bg: var(--ds-palette-neutral-0);
+  --ds-color-bg-subtle: var(--ds-palette-neutral-50);
+  --ds-color-bg-muted: var(--ds-palette-neutral-100);
+  --ds-color-surface: var(--ds-palette-neutral-0);
+  --ds-color-surface-raised: var(--ds-palette-neutral-0);
+  --ds-color-overlay: rgb(14 14 17 / 0.55);
+
+  --ds-color-text: var(--ds-palette-neutral-900);
+  --ds-color-text-muted: var(--ds-palette-neutral-600);
+  --ds-color-text-subtle: var(--ds-palette-neutral-500);
+  --ds-color-text-inverse: var(--ds-palette-neutral-0);
+
+  --ds-color-border: var(--ds-palette-neutral-200);
+  --ds-color-border-strong: var(--ds-palette-neutral-450);
+
+  --ds-color-accent: var(--ds-palette-indigo-600);
+  --ds-color-accent-hover: var(--ds-palette-indigo-700);
+  --ds-color-accent-subtle: var(--ds-palette-indigo-50);
+  --ds-color-accent-text: var(--ds-palette-indigo-700);
+  --ds-color-on-accent: var(--ds-palette-neutral-0);
+
+  --ds-color-danger: var(--ds-palette-red-600);
+  --ds-color-danger-hover: var(--ds-palette-red-700);
+  --ds-color-danger-subtle: var(--ds-palette-red-50);
+  --ds-color-danger-text: var(--ds-palette-red-700);
+  --ds-color-on-danger: var(--ds-palette-neutral-0);
+
+  --ds-color-success-subtle: var(--ds-palette-green-50);
+  --ds-color-success-text: var(--ds-palette-green-600);
+  --ds-color-warning-subtle: var(--ds-palette-amber-50);
+  --ds-color-warning-text: var(--ds-palette-amber-700);
+  --ds-color-info-subtle: var(--ds-palette-blue-50);
+  --ds-color-info-text: var(--ds-palette-blue-700);
+
+  --ds-color-focus: var(--ds-palette-indigo-500);
+
+  --ds-shadow-sm: 0 1px 2px rgb(14 14 17 / 0.06), 0 1px 3px rgb(14 14 17 / 0.08);
+  --ds-shadow-md: 0 4px 12px rgb(14 14 17 / 0.08), 0 2px 4px rgb(14 14 17 / 0.06);
+  --ds-shadow-lg: 0 20px 48px rgb(14 14 17 / 0.18), 0 4px 12px rgb(14 14 17 / 0.08);
+}
+
+/* Dark semantic layer, shared by the OS preference and the explicit attribute. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --ds-color-bg: var(--ds-palette-neutral-950);
+    --ds-color-bg-subtle: var(--ds-palette-neutral-900);
+    --ds-color-bg-muted: var(--ds-palette-neutral-800);
+    --ds-color-surface: var(--ds-palette-neutral-900);
+    --ds-color-surface-raised: var(--ds-palette-neutral-800);
+    --ds-color-overlay: rgb(0 0 0 / 0.65);
+    --ds-color-text: var(--ds-palette-neutral-50);
+    --ds-color-text-muted: var(--ds-palette-neutral-300);
+    --ds-color-text-subtle: var(--ds-palette-neutral-400);
+    --ds-color-text-inverse: var(--ds-palette-neutral-950);
+    --ds-color-border: var(--ds-palette-neutral-700);
+    --ds-color-border-strong: var(--ds-palette-neutral-500);
+    --ds-color-accent: var(--ds-palette-indigo-400);
+    --ds-color-accent-hover: var(--ds-palette-indigo-300);
+    --ds-color-accent-subtle: var(--ds-palette-indigo-900);
+    --ds-color-accent-text: var(--ds-palette-indigo-300);
+    --ds-color-on-accent: var(--ds-palette-neutral-950);
+    --ds-color-danger: var(--ds-palette-red-400);
+    --ds-color-danger-hover: var(--ds-palette-red-400);
+    --ds-color-danger-subtle: var(--ds-palette-red-900);
+    --ds-color-danger-text: var(--ds-palette-red-400);
+    --ds-color-on-danger: var(--ds-palette-neutral-950);
+    --ds-color-success-subtle: var(--ds-palette-green-900);
+    --ds-color-success-text: var(--ds-palette-green-400);
+    --ds-color-warning-subtle: var(--ds-palette-amber-900);
+    --ds-color-warning-text: var(--ds-palette-amber-400);
+    --ds-color-info-subtle: var(--ds-palette-blue-900);
+    --ds-color-info-text: var(--ds-palette-blue-400);
+    --ds-color-focus: var(--ds-palette-indigo-300);
+    --ds-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --ds-shadow-md: 0 4px 12px rgb(0 0 0 / 0.45);
+    --ds-shadow-lg: 0 20px 48px rgb(0 0 0 / 0.6);
+  }
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --ds-color-bg: var(--ds-palette-neutral-950);
+  --ds-color-bg-subtle: var(--ds-palette-neutral-900);
+  --ds-color-bg-muted: var(--ds-palette-neutral-800);
+  --ds-color-surface: var(--ds-palette-neutral-900);
+  --ds-color-surface-raised: var(--ds-palette-neutral-800);
+  --ds-color-overlay: rgb(0 0 0 / 0.65);
+  --ds-color-text: var(--ds-palette-neutral-50);
+  --ds-color-text-muted: var(--ds-palette-neutral-300);
+  --ds-color-text-subtle: var(--ds-palette-neutral-400);
+  --ds-color-text-inverse: var(--ds-palette-neutral-950);
+  --ds-color-border: var(--ds-palette-neutral-700);
+  --ds-color-border-strong: var(--ds-palette-neutral-500);
+  --ds-color-accent: var(--ds-palette-indigo-400);
+  --ds-color-accent-hover: var(--ds-palette-indigo-300);
+  --ds-color-accent-subtle: var(--ds-palette-indigo-900);
+  --ds-color-accent-text: var(--ds-palette-indigo-300);
+  --ds-color-on-accent: var(--ds-palette-neutral-950);
+  --ds-color-danger: var(--ds-palette-red-400);
+  --ds-color-danger-hover: var(--ds-palette-red-400);
+  --ds-color-danger-subtle: var(--ds-palette-red-900);
+  --ds-color-danger-text: var(--ds-palette-red-400);
+  --ds-color-on-danger: var(--ds-palette-neutral-950);
+  --ds-color-success-subtle: var(--ds-palette-green-900);
+  --ds-color-success-text: var(--ds-palette-green-400);
+  --ds-color-warning-subtle: var(--ds-palette-amber-900);
+  --ds-color-warning-text: var(--ds-palette-amber-400);
+  --ds-color-info-subtle: var(--ds-palette-blue-900);
+  --ds-color-info-text: var(--ds-palette-blue-400);
+  --ds-color-focus: var(--ds-palette-indigo-300);
+  --ds-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --ds-shadow-md: 0 4px 12px rgb(0 0 0 / 0.45);
+  --ds-shadow-lg: 0 20px 48px rgb(0 0 0 / 0.6);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+}
+
+/*
+ * Less motion: the visitor's system setting, or the site's own pause switch
+ * (MotionToggle / setMotionPaused sets data-motion="paused" on <html>). Both collapse every
+ * transition token, and components key their own animations off the same two triggers, so CSS
+ * and scripted effects (useLessMotion) always stop together. Keep the two blocks identical.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ds-duration-fast: 0ms;
+    --ds-duration-normal: 0ms;
+    --ds-duration-slow: 0ms;
+  }
+}
+
+:root[data-motion='paused'] {
+  --ds-duration-fast: 0ms;
+  --ds-duration-normal: 0ms;
+  --ds-duration-slow: 0ms;
+}

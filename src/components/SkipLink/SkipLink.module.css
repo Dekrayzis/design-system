@@ -1,0 +1,36 @@
+.skipLink {
+  position: fixed;
+  inset-block-start: var(--ds-space-2);
+  inset-inline-start: var(--ds-space-2);
+  /* Above dialogs and tooltips: when it's focused it is the most important thing on screen. */
+  z-index: calc(var(--ds-z-tooltip) + 1);
+  padding: var(--ds-space-3) var(--ds-space-4);
+  border: var(--ds-border-width) solid var(--ds-color-border-strong);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-surface-raised);
+  box-shadow: var(--ds-shadow-lg);
+  color: var(--ds-color-accent-text);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  line-height: var(--ds-line-height-normal);
+  text-decoration-line: underline;
+  text-underline-offset: 0.18em;
+}
+
+/* Visually hidden (but still focusable and announced) until it has focus. */
+.skipLink:not(:focus) {
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skipLink:focus {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}

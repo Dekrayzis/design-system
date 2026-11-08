@@ -1,0 +1,94 @@
+.tabs {
+  display: grid;
+  gap: var(--ds-space-4);
+}
+
+.list {
+  display: flex;
+  gap: var(--ds-space-1);
+  overflow-x: auto;
+  border-bottom: var(--ds-border-width) solid var(--ds-color-border);
+  scrollbar-width: none;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+  padding: var(--ds-space-2) var(--ds-space-3) var(--ds-space-3);
+  border: 0;
+  border-radius: var(--ds-radius-sm) var(--ds-radius-sm) 0 0;
+  background: none;
+  color: var(--ds-color-text-muted);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  inset-inline: var(--ds-space-2);
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background-color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--ds-color-text);
+}
+
+.tab[aria-selected='true'] {
+  color: var(--ds-color-text);
+}
+
+.tab[aria-selected='true']::after {
+  background: var(--ds-color-accent);
+}
+
+.tab:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: -2px;
+}
+
+.tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.panel:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+  border-radius: var(--ds-radius-sm);
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.icon > svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+/* Pill variant: sits at its natural width inside the Tabs grid unless fullWidth. */
+.pillList {
+  justify-self: start;
+}
+
+.pillListFull {
+  justify-self: stretch;
+}
+
+/* Windows High Contrast / forced colours: system colours replace ours, so restate state with them. */
+@media (forced-colors: active) {
+  .tab[aria-selected='true']::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}

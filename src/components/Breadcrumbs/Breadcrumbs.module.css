@@ -1,0 +1,83 @@
+.breadcrumbs {
+  color: var(--ds-color-text-muted);
+  font-size: var(--ds-font-size-sm);
+  line-height: var(--ds-line-height-normal);
+}
+
+/* Long trails wrap between crumbs; a very long single label wraps inside itself. */
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-1) var(--ds-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--ds-radius-sm);
+}
+
+.list:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+  min-width: 0;
+}
+
+/* Decorative chevron drawn with borders: nothing for screen readers to announce. */
+.item + .item::before {
+  content: '';
+  flex-shrink: 0;
+  width: 0.4em;
+  height: 0.4em;
+  border-block-start: 0.12em solid currentColor;
+  border-inline-end: 0.12em solid currentColor;
+  rotate: 45deg;
+}
+
+.item + .item:dir(rtl)::before {
+  rotate: -45deg;
+}
+
+.link,
+.text {
+  overflow-wrap: anywhere;
+}
+
+.current {
+  color: var(--ds-color-text);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  min-height: 1.5rem;
+  padding: 0 var(--ds-space-1);
+  border: var(--ds-border-width) solid var(--ds-color-border-strong);
+  border-radius: var(--ds-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color var(--ds-duration-fast) var(--ds-easing-standard),
+    color var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+.expand:hover {
+  background: var(--ds-color-bg-muted);
+  color: var(--ds-color-text);
+}
+
+.expand:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}

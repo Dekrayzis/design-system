@@ -1,0 +1,43 @@
+.link {
+  border-radius: var(--ds-radius-sm);
+  font-weight: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.18em;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition:
+    color var(--ds-duration-fast) var(--ds-easing-standard),
+    text-decoration-thickness var(--ds-duration-fast) var(--ds-easing-standard);
+}
+
+/* Visited links are deliberately not restyled: in an app UI most links are revisited constantly. */
+.default {
+  color: var(--ds-color-accent-text);
+}
+
+/* Inherits the surrounding text colour; the underline keeps it distinguishable (WCAG 1.4.1). */
+.subtle {
+  color: inherit;
+}
+
+/* Hover doesn't rely on a colour change alone: the underline thickens too. */
+.link:hover {
+  text-decoration-thickness: 0.12em;
+}
+
+.subtle:hover {
+  color: var(--ds-color-accent-text);
+}
+
+.link:focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.icon {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  vertical-align: -0.05em;
+}

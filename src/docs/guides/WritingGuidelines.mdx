@@ -1,0 +1,84 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-writing.webp';
+
+<Meta title="Guides/Writing guidelines" />
+
+<DocBanner title="Writing guidelines" eyebrow="Guides" src={banner} />
+
+Interface text is part of the design. These rules keep it consistent across products built with
+the system, and they're the rules the component stories follow.
+
+## Voice
+
+- **Plain and direct.** Write the way you'd explain it to someone at the next desk. "Save changes",
+  not "Persist modifications".
+- **Short.** Cut words that don't change the meaning: "please", "simply", "in order to".
+- **Calm.** No exclamation marks in errors, no blaming ("You entered an invalid…"), no jokes in
+  messages people see when something has gone wrong.
+- **British English** for the docs and examples: colour, organise, cancelled.
+
+## Mechanics
+
+Some differences are a single character, so the last column says exactly what changes.
+
+| Rule | Write | Not | The difference |
+| --- | --- | --- | --- |
+| Sentence case for everything | Create account | Create Account | Capital on the first word only |
+| No full stop on labels, buttons and titles | Rename project | Rename project. | No `.` at the end |
+| Full stops on full sentences (hints, errors, descriptions) | Enter your name. | Enter your name | Sentences end with `.` |
+| Curly apostrophes and quotes | You can’t undo this. | You can't undo this. | Curly `’`, not straight `'` |
+| Numerals for numbers | 3 files | three files | Digits, not words |
+| En dash for ranges | 2–10 people | 2-10 people | Longer en dash `–`, not hyphen `-` |
+| Ellipsis character for ongoing states | Saving… | Saving... | One `…` character, not three `...` |
+
+The last three look almost identical on screen. They matter because the right characters space and
+break lines properly, and some screen readers announce three typed full stops as "dot dot dot".
+Use the ellipsis only for something in progress, such as a loading button.
+
+| Character | Windows | Mac |
+| --- | --- | --- |
+| Curly apostrophe `’` | <kbd>Alt</kbd>+<kbd>0146</kbd> | <kbd>⌥</kbd>+<kbd>⇧</kbd>+<kbd>]</kbd> |
+| En dash `–` | <kbd>Alt</kbd>+<kbd>0150</kbd> | <kbd>⌥</kbd>+<kbd>-</kbd> |
+| Ellipsis `…` | <kbd>Alt</kbd>+<kbd>0133</kbd> | <kbd>⌥</kbd>+<kbd>;</kbd> |
+
+## Buttons and links
+
+- Start with a verb and name the object: "Delete project", "Invite people", "Download invoice".
+- Match the button to the dialog's title: a "Delete project?" dialog confirms with
+  "Delete project", not "OK" or "Yes".
+- The cancel action is "Cancel". Not "No", not "Never mind".
+- Link text makes sense on its own, since screen reader users often list links out of context: "Read the
+  pricing guide", not "Click here".
+- Use `LinkButton` when it navigates and `Button` when it acts, whatever the words say.
+
+## Errors
+
+Say what to do next, in the user's terms:
+
+| Situation          | Write                                          | Not                              |
+| ------------------ | ---------------------------------------------- | -------------------------------- |
+| Empty required field | Enter your email address.                    | This field is required.          |
+| Wrong format       | Enter an email address like name@example.com.  | Invalid email.                   |
+| Too short          | Use at least 8 characters.                     | Password too short.              |
+| Server failure     | Couldn’t save your changes. Try again.         | Error 500: Internal Server Error |
+
+Error summaries reuse field errors, so each one must make sense without its label next to it.
+
+## Confirmations and feedback
+
+- **Toasts** confirm something that already happened, in past tense: "Changes saved", "Project
+  archived". Offer an action ("Undo") rather than asking first when the action is reversible.
+- **Dialogs** ask before something that can't be undone. The title is the question ("Delete
+  project?"), the body says what will be lost ("its 14 files and all comments"), the button repeats
+  the verb.
+- **Alerts** describe a state of the page that persists: "Your trial ends in 3 days."
+
+## Accessible names
+
+- Icon-only buttons need a `label` that says what they do, not what they show: "Settings", not
+  "Gear".
+- Don't repeat the role: "Close", not "Close button".
+- Image alt text describes what matters in context. Decorative images get `alt=""`.
+- Keep visible text and accessible names matching where both exist, so voice control users can say
+  what they see (WCAG 2.5.3).

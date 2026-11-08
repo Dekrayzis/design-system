@@ -1,0 +1,82 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-shape.webp';
+import { DocExample } from '../DocExample';
+
+<Meta title="Foundations/Shape and elevation" />
+
+<DocBanner title="Shape and elevation" eyebrow="Foundations" src={banner} />
+
+## Radius
+
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, marginBlock: 16 }}>
+  {[
+    ['sm', '4px'],
+    ['md', '8px'],
+    ['lg', '12px'],
+    ['full', '999px'],
+  ].map(([r, v]) => (
+    <div key={r} style={{ textAlign: 'center' }}>
+      <div style={{ width: 88, height: 64, borderRadius: `var(--ds-radius-${r})`, background: 'var(--ds-color-accent-subtle)', border: '1px solid var(--ds-color-accent)' }} />
+      <code>radius-{r}</code>
+      <div style={{ fontSize: 13, color: '#55555f' }}>{v}</div>
+    </div>
+  ))}
+</div>
+
+| Token              | Use                                                                 |
+| ------------------ | ------------------------------------------------------------------- |
+| `--ds-radius-sm`   | Small things and things inside other things: checkboxes, tooltips, tab indicators, menu options. |
+| `--ds-radius-md`   | Controls and inline messages: buttons, inputs, selects, alerts, the error summary. |
+| `--ds-radius-lg`   | Containers that sit apart from the page: cards, dialogs, toasts.    |
+| `--ds-radius-full` | Pills and circles: avatars, badges, switches, spinners, radios.     |
+
+When you nest rounded boxes, the inner radius should be the outer radius minus the padding between
+them, so the curves stay parallel. In practice: `lg` outside, `md` or `sm` inside.
+
+## Borders
+
+`--ds-border-width` is `1px`. Use `--ds-color-border` for dividers and passive containers (cards),
+and `--ds-color-border-strong` for the outline of anything you interact with (inputs, checkboxes,
+radios). Only the strong border is guaranteed 3:1 against the background, which WCAG 1.4.11 requires
+for identifying controls. See [Colour](?path=/docs/foundations-colour--docs).
+
+## Elevation
+
+Shadows say "this sits above the page". Use them sparingly: most surfaces are flat and separated by
+a border.
+
+<DocExample>
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: 32 }}>
+  {['sm', 'md', 'lg'].map((s) => (
+    <div key={s} style={{ textAlign: 'center' }}>
+      <div style={{ width: 120, height: 80, borderRadius: 12, background: 'var(--ds-color-surface-raised)', boxShadow: `var(--ds-shadow-${s})` }} />
+      <code style={{ display: 'block', marginTop: 8 }}>shadow-{s}</code>
+    </div>
+  ))}
+</div>
+</DocExample>
+
+| Token            | Use                                                                    |
+| ---------------- | ---------------------------------------------------------------------- |
+| `--ds-shadow-sm` | Small raised parts inside a control, like the `Switch` thumb.          |
+| `--ds-shadow-md` | Resting raised surfaces (`Card` with `elevation="raised"`) and tooltips. |
+| `--ds-shadow-lg` | Things that float over content: dialogs, select menus, toasts, a hovered interactive card. |
+
+In dark mode shadows get much darker (they read as depth against a dark page rather than as a
+grey haze), and raised surfaces also step up to `--ds-color-surface-raised`, which is lighter than
+`surface`. Use both together: elevation in dark mode comes mostly from the lighter surface.
+
+Windows High Contrast drops shadows entirely, so anything that floats must also have a border.
+
+## Stacking order
+
+| Token           | Value | Layer                       |
+| --------------- | ----- | --------------------------- |
+| `--ds-z-dialog` | 1000  | Modal dialogs and the scrim |
+| `--ds-z-tooltip`| 1100  | Tooltips, above dialogs     |
+
+`Dialog` uses the native `<dialog>` top layer, and menus and tooltips use the Popover API where
+available, so most overlays escape `overflow: hidden` and stacking contexts without needing these.
+The tokens are the fallback and a shared reference for your own overlays: don't invent new
+z-index values above them.

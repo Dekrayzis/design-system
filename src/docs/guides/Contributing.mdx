@@ -1,0 +1,114 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-contributing.webp';
+
+<Meta title="Guides/Contributing" />
+
+<DocBanner title="Contributing" eyebrow="Guides" src={banner} />
+
+How to add or change a component so it fits with the rest of the system.
+
+## Setup
+
+```bash
+npm install
+npx playwright install chromium   # once, for the story tests
+npm run storybook                 # http://localhost:6006
+```
+
+| Command                  | What it does                                                         |
+| ------------------------ | -------------------------------------------------------------------- |
+| `npm test`               | Everything: unit tests (jsdom) and every story in real Chromium.     |
+| `npm run test:unit`      | Unit tests only. Fast; use while you work.                           |
+| `npm run test:storybook` | Story interaction and accessibility tests in headless Chromium.      |
+| `npm run typecheck`      | `tsc --noEmit`.                                                      |
+| `npm run build`          | Library build to `dist/`.                                            |
+| `npm run check`          | Typecheck, test and build. Run before you open a pull request.       |
+
+## Adding a component
+
+Each component lives in its own folder with four files:
+
+```
+src/components/Rating/
+  Rating.tsx            the component and its props
+  Rating.module.css     styles, reading tokens only
+  Rating.stories.tsx    Storybook stories (autodocs)
+  Rating.test.tsx       React Testing Library + jest-axe
+```
+
+Then export it, and its prop types, from `src/index.ts`.
+
+### 1. Pick the element first
+
+Decide what the thing **is** before how it looks. If HTML has an element for it (`<button>`,
+`<a>`, `<input type="checkbox">`, `<dialog>`, `<fieldset>`), build on that element. Only reach
+for ARIA roles when HTML can't express the pattern, and then follow the
+[WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/) pattern exactly,
+keyboard included.
+
+### 2. Props
+
+- Spread the rest of the props onto the underlying element, and type them by extending its
+  attributes (`ButtonHTMLAttributes<HTMLButtonElement>`), so `id`, `aria-*`, `data-*` and event
+  handlers just work.
+- Accept `className` and merge it with `cx()`. Don't accept a `style`-like escape hatch for internals.
+- Form controls take a required `label`, an optional `hint`, an `error`, and the validation props
+  from `src/utils/validation.ts`. Support both controlled (`value`/`onChange`) and uncontrolled
+  (`defaultValue`) use.
+- Document each prop with a JSDoc comment: Storybook shows it in the props table.
+
+### 3. Styles
+
+- Use semantic tokens only: `--ds-color-*`, `--ds-space-*`, `--ds-radius-*`, `--ds-duration-*`.
+  Never a palette primitive, never a raw colour or pixel value that a token covers.
+- Use the duration tokens for every transition, so reduced motion works automatically. Stop any
+  `@keyframes` animation under `prefers-reduced-motion` **and** `:root[data-motion='paused']`.
+- Make keyboard focus visible with an `outline` (not only a `box-shadow`): forced-colours mode
+  removes shadows.
+- Add a `@media (forced-colors: active)` block if state is shown with colour alone (selected,
+  checked, invalid).
+
+### 4. Stories
+
+- Set `title: 'Components/<Name>'` and a component description in
+  `parameters.docs.description.component`: what it is, what element it renders, when to use
+  something else.
+- Put a `/** JSDoc */` comment above every story; it becomes the story's description in the docs.
+- Cover the default, each variant and size, disabled, error and loading states, and a realistic
+  composed use.
+- Add a `play` function to stories with behaviour. It runs as a test in light, dark and forced
+  colours, then axe runs on the result.
+- If the component is focusable, add it to the
+  [Focus indicators](?path=/story/foundations-focus-indicators--every-control-shows-focus) story.
+
+### 5. Tests
+
+- Query the way users find things: `getByRole('button', { name: 'Save' })`, `getByLabelText`.
+  Avoid test IDs and class names.
+- Drive interactions with `user-event`, including the keyboard.
+- End every suite with an axe check: `expect(await axe(container)).toHaveNoViolations()`.
+- Test what the user experiences (announcements, focus moves, form submission), not internal state.
+
+## Changing tokens
+
+Edit `src/styles/tokens.css`. Change light and dark together, and remember that dark values appear
+twice (the `prefers-color-scheme` block and `[data-theme='dark']`): keep the two identical. The
+contrast tests in `src/styles/tokens.test.ts` must still pass. If you add a semantic colour that
+carries text, borders or focus, add it to those tests.
+
+## Docs
+
+Foundation and guide pages are MDX files in `src/docs/foundations` and `src/docs/guides`. Swatches
+and examples should use live tokens (`var(--ds-color-accent)`) or real components so the docs
+can't drift from the code. Update the README's component table when you add a component.
+
+## Review checklist
+
+- [ ] Native element where one exists; ARIA pattern followed where it doesn't
+- [ ] Works with keyboard only; focus visible in all three modes
+- [ ] Accessible name, description and state announced correctly
+- [ ] Tokens only; looks right in light, dark and forced colours
+- [ ] Respects reduced motion and the pause switch
+- [ ] Stories with descriptions, `play` tests for behaviour, unit tests with axe
+- [ ] Exported from `src/index.ts`; `npm run check` passes

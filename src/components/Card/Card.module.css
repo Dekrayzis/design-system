@@ -1,0 +1,75 @@
+.card {
+  position: relative;
+  display: block;
+  border: var(--ds-border-width) solid var(--ds-color-border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-color-surface);
+  color: var(--ds-color-text);
+  list-style: none;
+  transition:
+    box-shadow var(--ds-duration-normal) var(--ds-easing-standard),
+    border-color var(--ds-duration-normal) var(--ds-easing-standard),
+    translate var(--ds-duration-normal) var(--ds-easing-standard);
+}
+
+.padding-none {
+  padding: 0;
+}
+
+.padding-sm {
+  padding: var(--ds-space-3);
+}
+
+.padding-md {
+  padding: var(--ds-space-5);
+}
+
+.padding-lg {
+  padding: var(--ds-space-8);
+}
+
+.raised {
+  border-color: transparent;
+  background: var(--ds-color-surface-raised);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.interactive:hover {
+  border-color: var(--ds-color-border-strong);
+  box-shadow: var(--ds-shadow-lg);
+  translate: 0 -2px;
+}
+
+.card:has(.link:focus-visible) {
+  outline: var(--ds-focus-ring-width) solid var(--ds-color-focus);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.link {
+  color: inherit;
+  font-weight: var(--ds-font-weight-semibold);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  /* The card draws the ring; keep a transparent one for forced-colours mode. */
+  outline: var(--ds-focus-ring-width) solid transparent;
+}
+
+/* Stretch the link's hit area over the card. */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* In cards with a stretched CardLink, other interactive children sit above its overlay. */
+.card:has(.link) :is(button, input, select, textarea, a:not(.link)) {
+  position: relative;
+  z-index: 1;
+}

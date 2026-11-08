@@ -1,0 +1,187 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { MotionToggle } from '../../components/MotionToggle/MotionToggle';
+import { DocBanner } from '../DocBanner';
+import banner from '../assets/banner-motion.webp';
+import { DocExample } from '../DocExample';
+
+<Meta title="Foundations/Motion" />
+
+<DocBanner title="Motion" eyebrow="Foundations" src={banner} />
+
+Motion explains change: where something came from, where it went, what is busy. It is never
+decoration, and it always stops when the user asks it to.
+
+## Duration and easing
+
+| Token                     | Value                           | Use                                                    |
+| ------------------------- | ------------------------------- | ------------------------------------------------------ |
+| `--ds-duration-fast`      | 120ms                           | Hover and press colour changes, focus rings.           |
+| `--ds-duration-normal`    | 200ms                           | Opening menus and tooltips, switching tabs.            |
+| `--ds-duration-slow`      | 420ms                           | Things that travel a distance: toasts sliding, thumbs. |
+| `--ds-easing-standard`    | `cubic-bezier(0.2, 0, 0, 1)`    | The default for everything.                            |
+| `--ds-easing-emphasized`  | `cubic-bezier(0.22, 1, 0.36, 1)`| Fast start, long settle: elements that move position.  |
+
+```css
+.panel {
+  transition:
+    opacity var(--ds-duration-normal) var(--ds-easing-standard),
+    transform var(--ds-duration-normal) var(--ds-easing-standard);
+}
+```
+
+Always use the tokens rather than literal durations. That is what makes the reduced-motion switch
+below work everywhere at once.
+
+### Guidelines
+
+- Animate `opacity` and `transform`; avoid animating layout properties (`width`, `top`).
+- Entering things can take a little longer than leaving things.
+- Nothing essential should depend on watching an animation finish.
+- Don't flash: nothing may flash more than three times a second (WCAG 2.3.1).
+
+## Less motion: one switch, two triggers
+
+Motion is reduced when **either**:
+
+1. the operating system asks for it (`prefers-reduced-motion: reduce`), or
+2. the site's own pause switch is on (`data-motion="paused"` on `<html>`, set by `MotionToggle` or
+   `setMotionPaused(true)`).
+
+Both triggers collapse every `--ds-duration-*` token to `0ms` in `tokens.css`, so anything built on
+the tokens snaps instead of animating. Components with their own looping animations (`Spinner`,
+`Marquee`, toast countdowns) key off the same two triggers, so CSS and scripted motion always stop
+together. The pause switch also satisfies WCAG 2.2.2 (pause, stop, hide) for content that moves on
+its own.
+
+<DocExample>
+  <MotionToggle variant="labelled" />
+</DocExample>
+
+### In script-driven animation
+
+Use `useLessMotion()` for anything CSS tokens can't reach: autoplaying video, number counters,
+carousels, canvas or `requestAnimationFrame` loops. It re-renders when either trigger changes.
+
+```tsx
+import { useLessMotion } from '@dekrayzis/design-system';
+
+function HeroVideo() {
+  const lessMotion = useLessMotion();
+  return <video src="/hero.mp4" autoPlay={!lessMotion} muted loop={!lessMotion} playsInline controls />;
+}
+```
+
+| Export                     | What it does                                                         |
+| -------------------------- | -------------------------------------------------------------------- |
+| `useLessMotion()`          | `true` when either trigger is on. Use this one by default.           |
+| `useMotionPaused()`        | `true` when only the site switch is on.                              |
+| `useSystemReducesMotion()` | `true` when only the OS setting is on.                               |
+| `lessMotion()`             | Non-hook version, for event handlers and plain functions.            |
+| `setMotionPaused(bool)`    | Sets the site switch and remembers it in `localStorage`.             |
+| `motionPauseScript`        | Inline script that applies a saved choice before first paint.        |
+
+### Avoiding a flash of motion
+
+Without help, a saved "paused" choice only applies once your JavaScript loads, so the page
+animates for a moment first. `motionPauseScript` is a tiny inline script that applies the choice
+before first paint. It has to arrive **in the HTML itself**, in `<head>` before your bundle. Where
+you put it depends on how the page is rendered.
+
+#### Server-rendered apps (Next.js, Remix, Astro, plain SSR)
+
+Render it in `<head>`. Browsers run scripts that come with the server's HTML, so it takes effect
+before anything paints.
+
+```tsx
+import { motionPauseScript } from '@dekrayzis/design-system';
+
+<head>
+  <script dangerouslySetInnerHTML={{ __html: motionPauseScript }} />
+</head>
+```
+
+`dangerouslySetInnerHTML` is safe here: the script is a fixed string from the library, with no
+user input in it.
+
+#### Next.js App Router
+
+Put it in the root layout, and add `suppressHydrationWarning` to `<html>`. The script sets
+`data-motion` on `<html>` before React hydrates, and without the flag React warns that the
+attribute doesn't match what the server rendered. The flag only covers `<html>`'s own attributes,
+not its children.
+
+```tsx
+// app/layout.tsx
+import { motionPauseScript } from '@dekrayzis/design-system';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionPauseScript }} />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+#### Client-only apps (Vite, Create React App)
+
+Rendering the `<script>` from React does **nothing** here: browsers don't run script tags that
+React adds on the client. Put the script in `index.html` instead, above your bundle's
+`<script type="module">`:
+
+```html
+<head>
+  <script>try{if(localStorage.getItem("ds-motion-paused")==='1')document.documentElement.setAttribute('data-motion','paused')}catch(e){}</script>
+</head>
+```
+
+This is an exact copy of `motionPauseScript`, kept on one line so a CSP hash (below) matches it.
+If a future version of the library changes the script, update the copy to match.
+
+#### Content Security Policy
+
+If your site sends a CSP without `'unsafe-inline'` in `script-src`, the browser blocks the inline
+script and the saved choice applies late. Allow it in one of two ways:
+
+- **A nonce (recommended for server rendering).** Generate a fresh random value per request, send it
+  in the header as `script-src 'nonce-<value>'`, and put the same value on the tag:
+
+  ```tsx
+  <script nonce={nonce} dangerouslySetInnerHTML={{ __html: motionPauseScript }} />
+  ```
+
+  In Next.js, middleware usually creates the nonce and passes it on a request header; read it in
+  the layout with `(await headers()).get('x-nonce')`.
+
+- **A hash (for static `index.html`).** Allow the script's exact contents with
+  `script-src 'sha256-<hash>'`. Compute the hash from the text between the tags, byte for byte:
+
+  ```bash
+  node --input-type=module -e "import { motionPauseScript } from '@dekrayzis/design-system'; import { createHash } from 'node:crypto'; console.log(createHash('sha256').update(motionPauseScript).digest('base64'))"
+  ```
+
+  Run it in your project folder. The copy in `index.html` above must match `motionPauseScript`
+  exactly, with no spaces or line breaks inside the tag, or the hash won't match.
+
+  The hash changes whenever the script does, so recompute it when you upgrade the library.
+
+### On the server
+
+Hooks such as `useLessMotion()` report full motion while rendering on the server (the server can't
+know either setting) and correct themselves straight after hydration.
+
+## Respecting it in your own CSS
+
+If you write your own `@keyframes` animation, stop it under both triggers, the same way components do:
+
+```css
+.shimmer { animation: shimmer 1.5s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer { animation: none; }
+}
+:root[data-motion='paused'] .shimmer { animation: none; }
+```
