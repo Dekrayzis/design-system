@@ -1,0 +1,67 @@
+<style>
+  /*
+   * Docs pages use Storybook's own (light) typography, but the stories inside them follow the
+   * Theme toolbar. Give each story preview the active theme's surface and text colour so dark
+   * components never sit on a white page.
+   */
+  .docs-story {
+    background: var(--ds-color-bg);
+    color: var(--ds-color-text);
+  }
+
+  /*
+   * The library's base.css paints <body> in the active theme; keep it from showing around the docs
+   * layout. Plain HTML in MDX (spacing lists, swatch captions) inherits this colour rather than
+   * Storybook's, so it must be the light page's text colour or it turns near-white in dark mode.
+   */
+  body:has(.sbdocs-wrapper) {
+    background: #fff;
+    color: #2e3438;
+  }
+
+  /*
+   * Markdown task lists (`- [ ]`) render real checkboxes. The theme's dark color-scheme would paint
+   * them as solid dark squares on the light page, so draw them light, and drop the list bullets.
+   */
+  .sbdocs .contains-task-list {
+    list-style: none;
+    padding-inline-start: 0.25em;
+  }
+  .sbdocs .task-list-item input[type='checkbox'] {
+    color-scheme: light;
+    margin-inline-end: 0.5em;
+    vertical-align: -0.1em;
+  }
+
+  /*
+   * Code blocks on docs pages: the dark navy of the page banners, with a blue and orange syntax
+   * palette to match. !important because Storybook styles these with generated class names.
+   */
+  .sbdocs .docblock-source {
+    background: #0f1320 !important;
+    border-color: #1f2740 !important;
+  }
+  .sbdocs .docblock-source pre,
+  .sbdocs .docblock-source .token.plain-text {
+    color: #e4e7f0 !important;
+  }
+  .sbdocs .docblock-source .token.punctuation { color: #8a93ad !important; }
+  .sbdocs .docblock-source .token.comment { color: #8b95b3 !important; font-style: italic; }
+  .sbdocs .docblock-source .token.tag,
+  .sbdocs .docblock-source .token.keyword,
+  .sbdocs .docblock-source .token.selector { color: #7aa2ff !important; }
+  .sbdocs .docblock-source .token.class-name,
+  .sbdocs .docblock-source .token.function { color: #5eead4 !important; }
+  .sbdocs .docblock-source .token.attr-name,
+  .sbdocs .docblock-source .token.property { color: #fdba74 !important; }
+  .sbdocs .docblock-source .token.attr-value,
+  .sbdocs .docblock-source .token.string { color: #fb923c !important; }
+  .sbdocs .docblock-source .token.number,
+  .sbdocs .docblock-source .token.boolean { color: #c4b5fd !important; }
+  .sbdocs .docblock-source .token.attr-equals { color: #8a93ad !important; }
+  .sbdocs .docblock-source button {
+    background: #1a2135 !important;
+    color: #e4e7f0 !important;
+    border-color: #2a3352 !important;
+  }
+</style>

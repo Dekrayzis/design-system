@@ -1,0 +1,70 @@
+import{n as e}from"./rolldown-runtime-DkW27tQK.js";import{n as t,p as n}from"./iframe-BA5U10ay.js";import{t as r}from"./cx-MB73G3OO.js";import{i,t as a}from"./Button-CksBOm96.js";import{n as o,t as s}from"./Stack-CCsQXNDC.js";import{n as c,t as ee}from"./IconButton-DL3_kfGg.js";import{n as l,t as u}from"./motion-C7bdWeal.js";var d,f,p,m,te,ne,h,g,_,v,y,b;function x(){return(x=e((()=>{d=`ds-Toast-module__toaster--W5g86`,f=`ds-Toast-module__region--9-pkE`,p=`ds-Toast-module__item--EkR7F`,m=`ds-Toast-module__toast--FLdHz`,te=`ds-Toast-module__icon--VwvE1`,ne=`ds-Toast-module__text--1Pw-R`,h=`ds-Toast-module__message--3dP0P`,g=`ds-Toast-module__description---QwfC`,_=`ds-Toast-module__action---b4jg`,v=`ds-Toast-module__close--i10-s`,y=`ds-Toast-module__timer--0sIPi`,b={toaster:d,region:f,item:p,toast:m,"toast-in":`ds-Toast-module__toast-in--s3-NH`,"toast-out":`ds-Toast-module__toast-out---8SaR`,icon:te,text:ne,message:h,description:g,action:_,close:v,timer:y,"toast-timer":`ds-Toast-module__toast-timer--VugE6`}})))()}function re(e,t){if(!Number.isFinite(t))return;let n=z>0?0:window.setTimeout(()=>T(e),t);R.set(e,{remaining:t,startedAt:Date.now(),handle:n})}function S(){if(z+=1,!(z>1)){for(let e of R.values())window.clearTimeout(e.handle),e.remaining-=Date.now()-e.startedAt,e.handle=0;F()}}function C(){if(z=Math.max(0,z-1),!(z>0)){for(let[e,t]of R)t.startedAt=Date.now(),t.handle=window.setTimeout(()=>T(e),Math.max(t.remaining,0));F()}}function w(e){M=M.filter(t=>t.id!==e),F()}function T(e){let t=R.get(e);t&&window.clearTimeout(t.handle),R.delete(e);let n=M.find(t=>t.id===e);n&&!n.leaving&&(l()?w(e):(M=M.map(t=>t.id===e?{...t,leaving:!0}:t),F(),window.setTimeout(()=>w(e),j)))}function E(e,{tone:t=`success`,description:n,duration:r,action:i}={}){let a=N++,o=r??(t===`error`||i?1/0:5e3);return M=[...M,{id:a,message:e,description:n,tone:t,duration:o,action:i}],F(),re(a,o),a}function D(){for(let e of R.values())window.clearTimeout(e.handle);R.clear(),z=0,M=[],F()}function O({label:e=`Notifications`,position:t=`bottom-right`,className:n}){let i=(0,k.useSyncExternalStore)(I,()=>M,()=>L),o=(0,k.useSyncExternalStore)(I,B,()=>!1),s=(0,k.useRef)(!1),c=(0,k.useRef)(!1),l=t.startsWith(`top`);(0,k.useEffect)(()=>{let e=()=>document.hidden?S():C();return document.hidden&&S(),document.addEventListener(`visibilitychange`,e),()=>{document.removeEventListener(`visibilitychange`,e),document.hidden&&C()}},[]);let u=(e,t)=>{e.current!==t&&(e.current=t,t?S():C())};return(0,A.jsx)(`section`,{"aria-label":e,className:r(b.toaster,n),"data-position":t,"data-held":o||void 0,onPointerEnter:()=>u(s,!0),onPointerLeave:()=>u(s,!1),onFocus:()=>u(c,!0),onBlur:e=>{e.currentTarget.contains(e.relatedTarget)||u(c,!1)},children:[`polite`,`assertive`].map(e=>(0,A.jsx)(`div`,{className:b.region,role:e===`assertive`?`alert`:`status`,"aria-live":e,children:i.filter(t=>V.includes(t.tone)===(e===`assertive`)).map(e=>(0,A.jsx)(`div`,{className:b.item,style:{order:l?-e.id:e.id},"data-leaving":e.leaving||void 0,children:(0,A.jsxs)(`div`,{className:b.toast,"data-tone":e.tone,style:Number.isFinite(e.duration)?{"--toast-duration":`${e.duration}ms`}:void 0,children:[(0,A.jsx)(`span`,{className:b.icon,"aria-hidden":`true`,children:(0,A.jsx)(`svg`,{viewBox:`0 0 20 20`,width:`16`,height:`16`,fill:`none`,stroke:`currentColor`,strokeWidth:`2`,strokeLinecap:`round`,strokeLinejoin:`round`,children:H[e.tone]})}),(0,A.jsxs)(`div`,{className:b.text,children:[(0,A.jsx)(`div`,{className:b.message,children:e.message}),e.description&&(0,A.jsx)(`div`,{className:b.description,children:e.description}),e.action&&(0,A.jsx)(a,{className:b.action,size:`sm`,variant:`secondary`,onClick:()=>{e.action?.onClick(),T(e.id)},children:e.action.label})]}),(0,A.jsx)(ee,{className:b.close,size:`sm`,label:`Dismiss`,tooltip:!1,onClick:()=>T(e.id),icon:(0,A.jsx)(`svg`,{viewBox:`0 0 16 16`,fill:`none`,stroke:`currentColor`,strokeWidth:`1.6`,strokeLinecap:`round`,children:(0,A.jsx)(`path`,{d:`m4 4 8 8m0-8-8 8`})})}),Number.isFinite(e.duration)&&(0,A.jsx)(`span`,{className:b.timer,"aria-hidden":`true`})]})},e.id))},e))})}var k,A,j,M,N,P,F,I,L,R,z,B,V,H;function U(){return(U=e((()=>{k=n(),u(),i(),c(),x(),A=t(),j=320,M=[],N=1,P=new Set,F=()=>P.forEach(e=>e()),I=e=>(P.add(e),()=>P.delete(e)),L=[],R=new Map,z=0,B=()=>z>0,V=[`error`,`warning`],H={success:(0,A.jsx)(`path`,{d:`m6.5 10.5 2.5 2.5 4.5-5`}),info:(0,A.jsx)(`path`,{d:`M10 9v4.5M10 6.5v.01`}),warning:(0,A.jsx)(`path`,{d:`M10 6.5v4M10 13.5v.01`}),error:(0,A.jsx)(`path`,{d:`m7.5 7.5 5 5m0-5-5 5`})};try{T.displayName=`dismissToast`,T.__docgenInfo={description:`Dismiss a toast: it slides off screen, then is removed (instantly when motion is reduced).`,displayName:`dismissToast`,filePath:`C:/Users/vince/design-system/src/components/Toast/Toast.tsx`,methods:[],props:{},tags:{}}}catch{}try{E.displayName=`toast`,E.__docgenInfo={description:"Show a toast from anywhere (no hook or context needed). Returns its id for `dismissToast`.\nRequires a `<Toaster />` mounted once, e.g. in your app layout.",displayName:`toast`,filePath:`C:/Users/vince/design-system/src/components/Toast/Toast.tsx`,methods:[],props:{},tags:{}}}catch{}try{D.displayName=`clearToasts`,D.__docgenInfo={description:`Clears every toast at once, without animation; mainly for tests and route resets.`,displayName:`clearToasts`,filePath:`C:/Users/vince/design-system/src/components/Toast/Toast.tsx`,methods:[],props:{},tags:{}}}catch{}try{O.displayName=`Toaster`,O.__docgenInfo={description:`Renders toasts. Mount once.
+
+Two live regions are always in the page, so each new toast is announced: success and info
+politely, warnings and errors at once. Timers (and the countdown bar) pause while the pointer or
+keyboard focus is in the stack, and while the tab is hidden (WCAG 2.2.1). Toasts never take
+focus; their buttons are in the normal tab order. Each toast slides off towards the nearest
+screen edge when it goes, and the stack closes the gap smoothly.
+
+Adapted from Portfolio2k26's admin Toaster.`,displayName:`Toaster`,filePath:`C:/Users/vince/design-system/src/components/Toast/Toast.tsx`,methods:[],props:{label:{defaultValue:{value:`Notifications`},declarations:[{fileName:`design-system/src/components/Toast/Toast.tsx`,name:`ToasterProps`}],description:`Accessible name of the notifications landmark.`,name:`label`,parent:{fileName:`design-system/src/components/Toast/Toast.tsx`,name:`ToasterProps`},required:!1,tags:{},type:{name:`string`}},position:{defaultValue:{value:`bottom-right`},declarations:[{fileName:`design-system/src/components/Toast/Toast.tsx`,name:`ToasterProps`}],description:`Where the stack sits. Toasts leave towards the nearest screen edge.`,name:`position`,parent:{fileName:`design-system/src/components/Toast/Toast.tsx`,name:`ToasterProps`},required:!1,tags:{},type:{name:`enum`,raw:`ToasterPosition`,value:[{value:`"top-left"`},{value:`"top-center"`},{value:`"top-right"`},{value:`"bottom-left"`},{value:`"bottom-center"`},{value:`"bottom-right"`}]}},className:{defaultValue:null,declarations:[{fileName:`design-system/src/components/Toast/Toast.tsx`,name:`ToasterProps`}],description:``,name:`className`,parent:{fileName:`design-system/src/components/Toast/Toast.tsx`,name:`ToasterProps`},required:!1,tags:{},type:{name:`string`}}},tags:{}}}catch{}})))()}function ie({position:e}){return(0,W.useEffect)(()=>()=>D(),[]),(0,G.jsxs)(G.Fragment,{children:[(0,G.jsxs)(s,{direction:`row`,gap:2,wrap:!0,children:[(0,G.jsx)(a,{onClick:()=>E(`Changes saved`,{description:`Your profile is up to date.`}),children:`Success`}),(0,G.jsx)(a,{variant:`secondary`,onClick:()=>E(`A new version is available`,{tone:`info`,description:`Reload to update.`}),children:`Info`}),(0,G.jsx)(a,{variant:`secondary`,onClick:()=>E(`Storage almost full`,{tone:`warning`,description:`You’ve used 92% of 10 GB.`}),children:`Warning`}),(0,G.jsx)(a,{variant:`danger`,onClick:()=>E(`Couldn’t reach the server`,{tone:`error`,description:`Check your connection and try again.`}),children:`Error (stays)`}),(0,G.jsx)(a,{variant:`ghost`,onClick:()=>E(`Project archived`,{description:`It’s hidden from your dashboard.`,action:{label:`Undo`,onClick:()=>E(`Project restored`,{tone:`info`})}}),children:`With action`}),(0,G.jsx)(a,{variant:`ghost`,onClick:()=>E(`Link copied`,{duration:2e3}),children:`Short (2s)`})]}),(0,G.jsx)(O,{position:e})]})}var W,G,K,q,J,Y,X,Z,Q,$,ae;function oe(){return(oe=e((()=>{W=n(),i(),o(),U(),G=t(),{expect:K,userEvent:q,waitFor:J,within:Y}=__STORYBOOK_MODULE_TEST__,X={title:`Components/Toast`,component:ie,args:{position:`bottom-right`},argTypes:{position:{control:`select`,options:[`top-left`,`top-center`,`top-right`,`bottom-left`,`bottom-center`,`bottom-right`]}},parameters:{layout:`fullscreen`,docs:{description:{component:"Call `toast(message, { tone, description, duration, action })` from anywhere; mount `<Toaster />` once. Timed toasts show a countdown and slide off towards the nearest screen edge when their `duration` runs out (dismissing by hand uses the same exit); the stack closes the gap smoothly. Timers pause on hover, keyboard focus and hidden tabs (WCAG 2.2.1); errors and toasts with an action stay until dismissed. Announced politely (success, info) or at once (warning, error); toasts never take focus. With motion reduced they appear and disappear without sliding."},story:{inline:!1,height:`420px`}}},decorators:[e=>(0,G.jsx)(`div`,{style:{padding:24,minHeight:400},children:(0,G.jsx)(e,{})})]},Z={play:async({canvasElement:e})=>{let t=Y(e);await q.click(t.getByRole(`button`,{name:`Success`})),await K(t.getByRole(`status`)).toHaveTextContent(`Changes saved`),await K(t.getByRole(`button`,{name:`Success`})).toHaveFocus(),await q.click(t.getByRole(`button`,{name:`Error (stays)`})),await K(t.getByRole(`alert`)).toHaveTextContent(`Couldn’t reach the server`),await q.click(t.getByRole(`button`,{name:`With action`})),await q.click(Y(t.getByRole(`status`)).getByRole(`button`,{name:`Undo`})),await J(()=>K(t.getByRole(`status`)).toHaveTextContent(`Project restored`))}},Q={name:`Timed toast slides off screen`,play:async({canvasElement:e})=>{let t=Y(e);await q.click(t.getByRole(`button`,{name:`Short (2s)`})),await q.unhover(t.getByRole(`button`,{name:`Short (2s)`}));let n=t.getByText(`Link copied`).closest(`[data-tone]`),r=n.getBoundingClientRect().left;matchMedia(`(prefers-reduced-motion: reduce)`).matches||document.documentElement.getAttribute(`data-motion`)===`paused`||(await J(()=>K(n.closest(`[data-leaving]`)).not.toBeNull(),{timeout:4e3}),await J(()=>K(n.getBoundingClientRect().left).toBeGreaterThan(r+40),{timeout:1e3})),await J(()=>K(t.queryByText(`Link copied`)).not.toBeInTheDocument(),{timeout:4e3})}},$={args:{position:`top-center`}},ae=[`Default`,`SlidesOffWhenTimeIsUp`,`TopCenter`],Z.parameters={...Z.parameters,docs:{...Z.parameters?.docs,source:{originalSource:`{
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', {
+      name: 'Success'
+    }));
+    await expect(canvas.getByRole('status')).toHaveTextContent('Changes saved');
+    // The trigger keeps focus: toasts never steal it.
+    await expect(canvas.getByRole('button', {
+      name: 'Success'
+    })).toHaveFocus();
+    await userEvent.click(canvas.getByRole('button', {
+      name: 'Error (stays)'
+    }));
+    await expect(canvas.getByRole('alert')).toHaveTextContent('Couldn’t reach the server');
+    await userEvent.click(canvas.getByRole('button', {
+      name: 'With action'
+    }));
+    await userEvent.click(within(canvas.getByRole('status')).getByRole('button', {
+      name: 'Undo'
+    }));
+    await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent('Project restored'));
+  }
+}`,...Z.parameters?.docs?.source},description:{story:'A button for each tone, plus an action and a short duration. Success and info toasts go in a\r\npolite `role="status"` region, warnings and errors in an assertive `role="alert"` region, and\r\nthe button you pressed keeps focus. Errors and toasts with an action stay until dismissed.',...Z.parameters?.docs?.description}}},Q.parameters={...Q.parameters,docs:{...Q.parameters?.docs,source:{originalSource:`{
+  name: 'Timed toast slides off screen',
+  play: async ({
+    canvasElement
+  }) => {
+    const canvas = within(canvasElement);
+    // Keep the pointer away from the stack: hovering would (rightly) pause the timer.
+    await userEvent.click(canvas.getByRole('button', {
+      name: 'Short (2s)'
+    }));
+    await userEvent.unhover(canvas.getByRole('button', {
+      name: 'Short (2s)'
+    }));
+    const card = canvas.getByText('Link copied').closest('[data-tone]') as HTMLElement;
+    const startX = card.getBoundingClientRect().left;
+
+    // With motion on, it leaves to the right before it's removed; with motion reduced, it just goes.
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.getAttribute('data-motion') === 'paused';
+    if (!reduced) {
+      await waitFor(() => expect(card.closest('[data-leaving]')).not.toBeNull(), {
+        timeout: 4000
+      });
+      await waitFor(() => expect(card.getBoundingClientRect().left).toBeGreaterThan(startX + 40), {
+        timeout: 1000
+      });
+    }
+    await waitFor(() => expect(canvas.queryByText('Link copied')).not.toBeInTheDocument(), {
+      timeout: 4000
+    });
+  }
+}`,...Q.parameters?.docs?.source},description:{story:`A toast with \`duration: 2000\` shows a countdown bar, then slides off towards the nearest screen\r
+edge and is removed. With reduced motion it simply disappears; hovering or focusing the stack\r
+pauses the timer.`,...Q.parameters?.docs?.description}}},$.parameters={...$.parameters,docs:{...$.parameters?.docs,source:{originalSource:`{
+  args: {
+    position: 'top-center'
+  }
+}`,...$.parameters?.docs?.source},description:{story:'The stack at `position="top-center"`. The newest toast sits nearest the screen edge.',...$.parameters?.docs?.description}}}})))()}oe();export{Z as Default,Q as SlidesOffWhenTimeIsUp,$ as TopCenter,ae as __namedExportsOrder,X as default};
